@@ -50,7 +50,7 @@ export default function Footer() {
                 <a href="#menu">Full menu</a>
               </li>
               <li>
-                <a href="#cakes">Today&apos;s cakes</a>
+                <a href="#cakes">Cake Story</a>
               </li>
               <li>
                 <a href="#campsites">Campsites &amp; hours</a>

@@ -26,14 +26,21 @@ export default function Hero() {
 
   useEffect(() => {
     const el = root.current!;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+    let cancelReady = () => {};
     const ctx = gsap.context(() => {
       gsap.set(".steam path", { drawSVG: "0% 0%" });
       gsap.set(".twinkle", { scale: 0, transformOrigin: "50% 50%" });
       gsap.set(".hero__scene-inner", { yPercent: 18, opacity: 0 });
       gsap.set(".hero__sun", { yPercent: 70 });
 
+      const loops = gsap.timeline({ paused: true, repeat: -1 });
+      gsap.utils.toArray<SVGPathElement>(".steam path").forEach((path, index) => {
+        loops.fromTo(path, { drawSVG: "0% 0%", opacity: 0.9 }, { drawSVG: "0% 100%", duration: 1.5, ease: "expo.out" }, index * 0.16)
+          .to(path, { drawSVG: "100% 100%", opacity: 0, duration: 1.1, ease: "expo.out" }, 1.5 + index * 0.16);
+      });
+      loops.to(".twinkle", { scale: 0.65, duration: 1.5, stagger: .15, yoyo: true, repeat: 1, ease: "expo.out" }, 0);
       const intro = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
       intro
         .to(".hero__scene-inner", { yPercent: 0, opacity: 1, duration: 1.6 })
@@ -41,26 +48,17 @@ export default function Hero() {
         .to("[data-intro]", { opacity: 1, y: 0, duration: 1, stagger: 0.07 }, 0.45)
         .to(".hero__sun", { yPercent: 0, duration: 2.2, ease: "power3.out" }, 0.4)
         .to(".twinkle", { scale: 1, duration: 0.8, stagger: 0.12, ease: "back.out(3)" }, 1)
-        .add(() => startLoops(), 1.2);
+        .add(() => loops.play(), 1.6);
       gsap.set("[data-intro]", { y: 20 });
 
-      function startLoops() {
-        // steam: draw up, then fade, forever
-        gsap.utils.toArray<SVGPathElement>(".steam path").forEach((p, i) => {
-          gsap
-            .timeline({ repeat: -1, delay: i * 0.5, repeatDelay: 0.4 })
-            .fromTo(p, { drawSVG: "0% 0%", opacity: 0.9 }, { drawSVG: "0% 100%", duration: 1.6, ease: "sine.inOut" })
-            .to(p, { drawSVG: "100% 100%", opacity: 0, duration: 1.2, ease: "sine.in" });
-        });
-        gsap.to(".twinkle", { scale: 0.4, duration: 1.4, stagger: { each: 0.3, repeat: -1, yoyo: true }, ease: "sine.inOut" });
-      }
+      ScrollTrigger.create({ trigger: el, start: "top bottom", end: "bottom top", onLeave: () => loops.pause(), onEnterBack: () => loops.play() });
 
-      onReady(() => intro.play());
+      cancelReady = onReady(() => intro.play());
 
       // scroll: copy lifts away, camp drifts slower than the page
       gsap.to(".hero__top", {
-        yPercent: -22,
-        opacity: 0.2,
+        yPercent: -10,
+        opacity: 0.65,
         ease: "none",
         scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true },
       });
@@ -70,7 +68,9 @@ export default function Hero() {
         scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true },
       });
     }, el);
-    return () => ctx.revert();
+    return () => { cancelReady(); ctx.revert(); };
+    });
+    return () => media.revert();
   }, []);
 
   return (
@@ -114,6 +114,7 @@ export default function Hero() {
             See the menu
           </a>
         </div>
+        <p className="hero__note" data-intro>Good coffee. Real food. Your kind of company.</p>
       </div>
 
       <div className="hero__scene" aria-hidden>
@@ -152,6 +153,7 @@ export default function Hero() {
       <div className="hero__scroll" aria-hidden>
         <i /> Scroll to camp
       </div>
+      <div className="hero__field-note" data-intro><span>YOUR EVERYDAY ESCAPE</span><span>Seven campsites. One familiar feeling.</span></div>
     </section>
   );
 }

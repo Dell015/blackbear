@@ -136,15 +136,18 @@ function AddOns({ title, items, q }: { title: string; items: FoodItem[]; q: stri
 export default function Menu() {
   const [mode, setMode] = useState<Mode>("food");
   const [q, setQ] = useState("");
+  const [tag, setTag] = useState<"all" | "fav" | "sig" | "veg">("all");
   const [active, setActive] = useState<string>("");
   const boardsRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const query = q.trim();
 
-  const match = (name: string) => !q || norm(name).includes(norm(q.trim()));
+  const match = (item: { name: string; tags?: string[] }) => (!query || norm(item.name).includes(norm(query))) && (tag === "all" || item.tags?.includes(tag));
 
-  const foodF = useMemo(() => food.map((s) => ({ ...s, items: s.items.filter((i) => match(i.name)) })).filter((s) => s.items.length), [q]); // eslint-disable-line
-  const drinkF = useMemo(() => drinks.map((s) => ({ ...s, items: s.items.filter((i) => match(i.name)) })).filter((s) => s.items.length), [q]); // eslint-disable-line
-  const fAdd = foodAddOns.filter((i) => match(i.name));
-  const dAdd = [...drinkAddOns, ...readyToDrink].filter((i) => match(i.name));
+  const foodF = useMemo(() => food.map((s) => ({ ...s, items: s.items.filter(match) })).filter((s) => s.items.length), [query, tag]);
+  const drinkF = useMemo(() => drinks.map((s) => ({ ...s, items: s.items.filter(match) })).filter((s) => s.items.length), [query, tag]);
+  const fAdd = foodAddOns.filter(match);
+  const dAdd = [...drinkAddOns, ...readyToDrink].filter(match);
 
   const count = (m: Mode) => (m === "food" ? foodF.reduce((a, s) => a + s.items.length, 0) + fAdd.length : drinkF.reduce((a, s) => a + s.items.length, 0) + dAdd.length);
   const here = count(mode);
@@ -153,8 +156,10 @@ export default function Menu() {
   // "Pick your trail" cards jump here and switch to drinks
   useEffect(() => {
     const on = (e: Event) => {
-      setMode((e as CustomEvent<Mode>).detail);
-      setQ("");
+      const detail = (e as CustomEvent<Mode | { mode: Mode; query?: string }>).detail;
+      setMode(typeof detail === "string" ? detail : detail.mode);
+      setQ(typeof detail === "string" ? "" : detail.query ?? "");
+      setTag("all");
     };
     window.addEventListener("bb:menu", on);
     return () => window.removeEventListener("bb:menu", on);
@@ -164,7 +169,19 @@ export default function Menu() {
   useEffect(() => {
     const t = setTimeout(() => ScrollTrigger.refresh(), 60);
     return () => clearTimeout(t);
-  }, [mode, q]);
+  }, [mode, q, tag]);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement;
+      if (event.key === "/" && !event.metaKey && !event.ctrlKey && !target.matches("input, textarea, select, [contenteditable=true]") && !document.querySelector('[role="dialog"][aria-hidden="false"]')) {
+        event.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   // highlight the category chip for the board in view
   useEffect(() => {
@@ -179,7 +196,7 @@ export default function Menu() {
     );
     boards.forEach((b) => io.observe(b));
     return () => io.disconnect();
-  }, [mode, q]);
+  }, [mode, q, tag]);
 
   const sections = mode === "food" ? foodF : drinkF;
 
@@ -196,8 +213,7 @@ export default function Menu() {
             </h2>
           </div>
           <p className="lead" data-reveal>
-            Brunch all day, lunch and dinner plates, bear bites, focaccia pizza, and a coffee bar with three cup sizes. Prices in pesos, straight from the
-            menu boards at every campsite.
+            Something for slow mornings, big appetites, and one more coffee. Explore the kitchen and coffee bar, with prices straight from Black Bear&apos;s menu boards.
           </p>
         </div>
 
@@ -205,15 +221,16 @@ export default function Menu() {
           <div className="menu__bar-row">
             <div className="seg" role="group" aria-label="Menu type">
               {(["food", "drinks"] as Mode[]).map((m) => (
-                <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)}>
-                  {m}
+                <button key={m} aria-pressed={mode === m} onClick={() => { setMode(m); setActive(""); }}>
+                  {m} {(query || tag !== "all") && <span className="seg__count">{count(m)}</span>}
                 </button>
               ))}
             </div>
             <label className="search">
               <span className="sr-only">Search the menu</span>
               <IconSearch />
-              <input value={q} onChange={(e) => setQ(e.target.value.slice(0, 40))} placeholder="Search: matcha, loco moco…" maxLength={40} />
+              <input ref={searchRef} type="search" value={q} onChange={(e) => setQ(e.target.value.slice(0, 40))} onKeyDown={(e) => { if (e.key === "Escape") { setQ(""); searchRef.current?.blur(); } }} placeholder="Find your craving…" maxLength={40} autoComplete="off" spellCheck={false} aria-controls="menu-results" />
+              {!q && <kbd className="search__key" aria-hidden="true">/</kbd>}
               {q && (
                 <button className="clear" type="button" aria-label="Clear search" onClick={() => setQ("")}>
                   <IconClose width={16} />
@@ -221,18 +238,27 @@ export default function Menu() {
               )}
             </label>
           </div>
-          {!q && (
+          {!query && (
             <nav className="chips" aria-label="Menu categories">
               {sections.map((s) => (
                 <a key={s.id} href={`#m-${s.id}`} className={active === `m-${s.id}` ? "is-active" : ""}>
                   {s.title}
                 </a>
               ))}
-              <a href={mode === "food" ? "#m-food-add-ons" : "#m-drink-add-ons-ready-to-drink"}>Add-ons</a>
+              {(mode === "food" ? fAdd : dAdd).length > 0 && <a href={mode === "food" ? "#m-food-add-ons" : "#m-drink-add-ons-ready-to-drink"}>Add-ons</a>}
             </nav>
           )}
         </div>
 
+        <div className="menu__refine">
+          <div className="menu-filters" role="group" aria-label="Filter by menu tags">
+            <button aria-pressed={tag === "all"} onClick={() => setTag("all")}>All picks</button>
+            <button aria-pressed={tag === "fav"} onClick={() => setTag("fav")}><TagFav /> Fan favorites</button>
+            <button aria-pressed={tag === "sig"} onClick={() => setTag("sig")}><TagSig /> Signatures</button>
+            <button aria-pressed={tag === "veg"} onClick={() => setTag("veg")}><TagVeg /> Vegetarian</button>
+          </div>
+          <span className="menu__results" role="status" aria-live="polite" aria-atomic="true">{here} {mode === "food" ? "picks" : "drinks"}{query ? ` for “${query}”` : " to explore"}</span>
+        </div>
         <div className="legend">
           <span>
             <TagFav className="tag-icon" /> Fan&apos;s favorite
@@ -251,17 +277,18 @@ export default function Menu() {
             ))}
         </div>
 
+        <div id="menu-results">
         {here === 0 ? (
           <div className="empty">
-            <div className="hand">Nothing on the {mode} board for &ldquo;{q}&rdquo;</div>
-            <p>Try another word, or check the other side of the menu.</p>
+            <div className="hand">No picks on this trail just yet.</div>
+            <p>{query ? `No ${mode} match “${query}” with these filters.` : "Try another filter, or explore the other side of the menu."}</p>
             {count(other) > 0 ? (
               <button className="btn" onClick={() => setMode(other)}>
                 {count(other)} match{count(other) > 1 ? "es" : ""} in {other}
               </button>
             ) : (
-              <button className="btn btn--ghost" onClick={() => setQ("")}>
-                Clear search
+              <button className="btn btn--ghost" onClick={() => { setQ(""); setTag("all"); }}>
+                Reset filters
               </button>
             )}
           </div>
@@ -274,6 +301,7 @@ export default function Menu() {
             {mode === "drinks" && dAdd.length > 0 && <AddOns title="Drink Add-ons & Ready to Drink" items={dAdd} q={q} />}
           </div>
         )}
+        </div>
 
         <div className="service">
           <span className="pill">{brand.serviceCharge}</span>

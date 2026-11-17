@@ -1,9 +1,9 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { branches, cakeStory, cakes, type Branch } from "@/lib/data";
+import { branches, cakeStory, cakeStoryDate, cakes, type Branch } from "@/lib/data";
 import { hoursText, manilaNow, statusOf, type Status } from "@/lib/hours";
 import Img from "./Img";
-import { lockScroll } from "./Motion";
+import { useDialog } from "@/lib/useDialog";
 import { IconArrowRight, IconBookmark, IconClose, IconDirections, IconPhone, IconShare } from "./Icons";
 
 /* --------------------------- trail map --------------------------- */
@@ -112,16 +112,7 @@ function Sheet({
   toast: (m: string) => void;
 }) {
   const open = !!b;
-  useEffect(() => {
-    if (!open) return;
-    lockScroll(true);
-    const k = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", k);
-    return () => {
-      lockScroll(false);
-      window.removeEventListener("keydown", k);
-    };
-  }, [open, onClose]);
+  const dialog = useDialog<HTMLElement>(open, onClose);
 
   const [last, setLast] = useState<Branch | null>(null);
   useEffect(() => {
@@ -139,8 +130,8 @@ function Sheet({
         await navigator.clipboard.writeText(`${text}\n${url}`);
         toast("Address copied");
       }
-    } catch {
-      /* user cancelled */
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === "AbortError")) toast("Could not share. Use Directions to open the address.");
     }
   };
 
@@ -149,7 +140,7 @@ function Sheet({
   return (
     <>
       <div className={`sheet-backdrop ${open ? "is-open" : ""}`} onClick={onClose} aria-hidden />
-      <aside className={`sheet ${open ? "is-open" : ""}`} role="dialog" aria-modal="true" aria-label={x ? `${x.name} campsite` : "Campsite"} aria-hidden={!open} data-lenis-prevent>
+      <aside ref={dialog} className={`sheet ${open ? "is-open" : ""}`} role="dialog" aria-modal="true" aria-label={x ? `${x.name} campsite` : "Campsite"} aria-hidden={!open} inert={!open} tabIndex={-1} data-lenis-prevent>
         {x && (
           <>
             <button className="sheet__close" onClick={onClose} aria-label="Close" tabIndex={open ? 0 : -1}>
@@ -218,7 +209,7 @@ function Sheet({
                 )}
                 {todays.length > 0 && (
                   <div className="sheet__row" style={{ display: "grid", gap: 8 }}>
-                    <span>Today&apos;s cakes</span>
+                    <span>Sample cakes · {cakeStoryDate}</span>
                     <span className="sheet__cakes">
                       {todays.map((n) => (
                         <span key={n} className="pill pill--tan">

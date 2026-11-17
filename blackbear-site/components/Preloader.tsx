@@ -14,6 +14,7 @@ declare global {
 export function onReady(fn: () => void) {
   if (window.__bbReady) fn();
   else window.addEventListener("bb:ready", fn, { once: true });
+  return () => window.removeEventListener("bb:ready", fn);
 }
 function ready() {
   window.__bbReady = true;
@@ -39,22 +40,20 @@ export default function Preloader() {
       return;
     }
     document.documentElement.style.overflow = "hidden";
-    const count = el.querySelector(".preloader__count b")!;
-    const obj = { v: 0 };
     const tl = gsap.timeline({
       onComplete: () => {
         document.documentElement.style.overflow = "";
         setGone(true);
       },
     });
-    tl.fromTo(el.querySelectorAll("circle"), { drawSVG: "0%" }, { drawSVG: "100%", duration: 1.1, stagger: 0.15, ease: "power2.inOut" })
-      .fromTo(el.querySelector("img"), { scale: 0.6, opacity: 0, rotate: -20 }, { scale: 1, opacity: 1, rotate: 0, duration: 0.9, ease: "back.out(1.8)" }, 0.2)
-      .to(obj, { v: 100, duration: 1.3, ease: "power2.inOut", onUpdate: () => (count.textContent = String(Math.round(obj.v))) }, 0)
-      .to(el.querySelector(".preloader__badge"), { scale: 0.9, opacity: 0, duration: 0.45, ease: "power2.in" }, "+=0.15")
+    tl.fromTo(el.querySelectorAll("circle"), { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.5, stagger: 0.08, ease: "expo.out" })
+      .fromTo(el.querySelector("img"), { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "expo.out" }, 0)
+      .to(el.querySelector(".preloader__badge"), { scale: 0.96, opacity: 0, duration: 0.2, ease: "expo.out" }, "+=0.05")
       .add(ready, "-=0.1")
-      .to(el, { yPercent: -100, duration: 0.95, ease: "expo.inOut" }, "-=0.15");
+      .to(el, { yPercent: -100, duration: 0.65, ease: "expo.out" }, "-=0.1");
     return () => {
       tl.kill();
+      document.documentElement.style.overflow = "";
     };
   }, []);
 
@@ -69,7 +68,7 @@ export default function Preloader() {
         <Img slug="logo-badge-cream-on-forest" alt="" sizes="230px" priority />
       </div>
       <div className="preloader__count">
-        Setting up camp <b>0</b>%
+        Bear hugs &amp; bold brews
       </div>
     </div>
   );

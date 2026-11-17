@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Prototype: type errors don't block a demo build (see playbook section 4).
-  typescript: { ignoreBuildErrors: true },
+  // Keep the client preview subject to Next's production type checks.
+  poweredByHeader: false,
 };
 
 export default nextConfig;

@@ -26,14 +26,14 @@ export default function Series() {
         </div>
         <div className="rail" ref={rail} data-stagger>
           {series.map((s) => (
-            <a className="series-card" key={s.id} href="#menu" onClick={() => window.dispatchEvent(new CustomEvent("bb:menu", { detail: "drinks" }))}>
+            <a className="series-card" key={s.id} href="#menu" onClick={() => window.dispatchEvent(new CustomEvent("bb:menu", { detail: { mode: "drinks", query: s.id === "decaf" ? "" : s.id === "refreshers" ? "refresher" : s.id === "smoothies" ? "" : s.id } }))}>
               <div className="series-card__img">
                 <Img slug={s.image} alt={s.title} sizes="360px" />
               </div>
               <div className="series-card__body">
                 <h3 className="display">{s.title}</h3>
                 <p>{s.line}</p>
-                <span className="series-card__from">{s.fromLabel ?? `From ₱${s.from}`}</span>
+                <span className="series-card__from">{s.fromLabel ?? `From ₱${s.from}`} <span aria-hidden="true">↗</span></span>
               </div>
             </a>
           ))}

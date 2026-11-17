@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { branches } from "@/lib/data";
-import { lockScroll } from "./Motion";
+import { useDialog } from "@/lib/useDialog";
 import { IconClose, IconMenu, IconPhone, IconPin } from "./Icons";
 
 /** Sticky action bar on phones: Menu, Campsites, Call (picks a branch). */
@@ -15,20 +15,11 @@ export default function MobileBar() {
     return () => window.removeEventListener("scroll", f);
   }, []);
   const close = useCallback(() => setSheet(false), []);
-  useEffect(() => {
-    if (!sheet) return;
-    lockScroll(true);
-    const k = (e: KeyboardEvent) => e.key === "Escape" && close();
-    window.addEventListener("keydown", k);
-    return () => {
-      lockScroll(false);
-      window.removeEventListener("keydown", k);
-    };
-  }, [sheet, close]);
+  const dialog = useDialog<HTMLElement>(sheet, close);
 
   return (
     <>
-      <nav className={`mbar ${on ? "is-on" : ""}`} aria-label="Quick actions">
+      <nav className={`mbar ${on ? "is-on" : ""}`} aria-label="Quick actions" inert={!on} aria-hidden={!on}>
         <a href="#menu">
           <IconMenu /> Menu
         </a>
@@ -40,7 +31,7 @@ export default function MobileBar() {
         </button>
       </nav>
       <div className={`sheet-backdrop ${sheet ? "is-open" : ""}`} onClick={close} aria-hidden />
-      <aside className={`sheet callsheet ${sheet ? "is-open" : ""}`} role="dialog" aria-modal="true" aria-label="Call a campsite" aria-hidden={!sheet} data-lenis-prevent>
+      <aside ref={dialog} className={`sheet callsheet ${sheet ? "is-open" : ""}`} role="dialog" aria-modal="true" aria-label="Call a campsite" aria-hidden={!sheet} inert={!sheet} tabIndex={-1} data-lenis-prevent>
         <button className="sheet__close" onClick={close} aria-label="Close" tabIndex={sheet ? 0 : -1}>
           <IconClose />
         </button>

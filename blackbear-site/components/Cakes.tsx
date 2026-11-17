@@ -24,35 +24,45 @@ export default function Cakes() {
         <div className="section-head section-head--split">
           <div>
             <span className="eyebrow" data-reveal>
-              Today&apos;s cake selection
+            A little something sweet
             </span>
             <h2 className="retro" data-reveal>
               Cake Story
             </h2>
           </div>
           <p className="lead" data-reveal>
-            Every campsite bakes a different lineup. Instead of a story that disappears in 24 hours, the cake case lives here, updated by the crew each
-            morning.
+            A different lineup at every campsite. Take a peek at a sample Cake Story, find your favorite slice, then call the crew for today&apos;s selection.
           </p>
         </div>
 
         <DiamondRow fill="#c5a781" ink="#43553d" />
 
         <div className="branch-tabs" role="tablist" aria-label="Choose a campsite">
-          {withStory.map((x) => (
-            <button key={x.id} role="tab" aria-selected={sel === x.id} onClick={() => setSel(x.id)}>
+          {withStory.map((x, index) => (
+            <button key={x.id} id={`cake-tab-${x.id}`} role="tab" aria-selected={sel === x.id} aria-controls="cake-panel" tabIndex={sel === x.id ? 0 : -1} onClick={() => setSel(x.id)} onKeyDown={(event) => {
+              let next = index;
+              if (event.key === "ArrowRight") next = (index + 1) % withStory.length;
+              else if (event.key === "ArrowLeft") next = (index + withStory.length - 1) % withStory.length;
+              else if (event.key === "Home") next = 0;
+              else if (event.key === "End") next = withStory.length - 1;
+              else return;
+              event.preventDefault();
+              setSel(withStory[next].id);
+              document.getElementById(`cake-tab-${withStory[next].id}`)?.focus({ preventScroll: true });
+              document.getElementById(`cake-tab-${withStory[next].id}`)?.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "instant" });
+            }}>
               {x.short}
             </button>
           ))}
         </div>
 
-        <div className="cake-board" role="tabpanel" aria-label={`Cakes at ${b.name}`}>
+        <div className="cake-board" id="cake-panel" role="tabpanel" aria-labelledby={`cake-tab-${sel}`} tabIndex={0}>
           <div className="cake-board__head">
             <h3 className="display h3">{b.name}</h3>
-            <span className="pill">Cake Story · {dateLabel}</span>
+            <span className="pill">Sample selection · {dateLabel}</span>
           </div>
           {list.length ? (
-            <div className="cake-grid">
+            <div className="cake-grid" key={sel}>
               {list.map((c) => (
                 <div className="cake" key={c.id}>
                   {c.image ? (

@@ -48,6 +48,7 @@ function dayRange(days: number[]) {
 }
 
 export function statusOf(b: Branch, now = manilaNow()): Status {
+  if (!b.hoursConfirmed) return { kind: "unknown", label: "Hours to confirm" };
   if (b.hours === "24/7") return { kind: "open", label: "Open 24/7" };
   if (!b.hours) return { kind: "unknown", label: "Hours to confirm" };
   const { day, minutes } = now;

@@ -19,7 +19,7 @@ export default function Page() {
     <>
       <Preloader />
       <Header />
-      <main>
+      <main id="main" tabIndex={-1}>
         <Hero />
         <Ticker />
         <Story />

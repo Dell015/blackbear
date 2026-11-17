@@ -22,11 +22,16 @@ declare global {
  */
 export default function Motion() {
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncPreference = () => document.documentElement.classList.toggle("rm", preference.matches);
+    syncPreference();
+    preference.addEventListener("change", syncPreference);
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
 
-    const lenis = new Lenis({ lerp: 0.11, wheelMultiplier: 1 });
+    const lenis = new Lenis({ lerp: 0.12, wheelMultiplier: 1, anchors: false });
     window.__lenis = lenis;
+    if (locks > 0) lenis.stop();
     lenis.on("scroll", ScrollTrigger.update);
     const raf = (t: number) => lenis.raf(t * 1000);
     gsap.ticker.add(raf);
@@ -103,14 +108,18 @@ export default function Motion() {
 
     // in-page anchor links go through Lenis
     const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
       if (!a) return;
       const id = a.getAttribute("href")!;
       if (id.length < 2) return;
-      const target = document.querySelector(id);
+      const target = document.getElementById(decodeURIComponent(id.slice(1)));
       if (!target) return;
       e.preventDefault();
-      lenis.scrollTo(target as HTMLElement, { offset: -70, duration: 1.4 });
+      const offset = target.classList.contains("board") ? -parseFloat(getComputedStyle(target).scrollMarginTop) : -parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) - 16;
+      lenis.scrollTo(target as HTMLElement, { offset, duration: 1.1, force: true, onComplete: () => {
+        if (id === "#main") (target as HTMLElement).focus({ preventScroll: true });
+      } });
       history.replaceState(null, "", id);
     };
     document.addEventListener("click", onClick);
@@ -118,14 +127,29 @@ export default function Motion() {
     // images load late → recompute trigger positions
     const refresh = () => ScrollTrigger.refresh();
     window.addEventListener("load", refresh);
+    let refreshFrame = 0;
+    const resize = new ResizeObserver(() => {
+      cancelAnimationFrame(refreshFrame);
+      refreshFrame = requestAnimationFrame(refresh);
+    });
+    const main = document.querySelector("main");
+    if (main) resize.observe(main);
+    document.fonts.ready.then(refresh);
 
     return () => {
       document.removeEventListener("click", onClick);
       window.removeEventListener("load", refresh);
+      cancelAnimationFrame(refreshFrame);
+      resize.disconnect();
       ctx.revert();
       gsap.ticker.remove(raf);
       lenis.destroy();
       delete window.__lenis;
+    };
+    });
+    return () => {
+      preference.removeEventListener("change", syncPreference);
+      media.revert();
     };
   }, []);
   return null;
@@ -133,7 +157,9 @@ export default function Motion() {
 
 /** Lock page scroll (sheets, drawer). Counter so nested locks are safe. */
 let locks = 0;
+let previousOverflow = "";
 export function lockScroll(on: boolean) {
+  if (on && locks === 0) previousOverflow = document.documentElement.style.overflow;
   locks = Math.max(0, locks + (on ? 1 : -1));
   const l = window.__lenis;
   if (locks > 0) {
@@ -141,6 +167,6 @@ export function lockScroll(on: boolean) {
     document.documentElement.style.overflow = "hidden";
   } else {
     l?.start();
-    document.documentElement.style.overflow = "";
+    document.documentElement.style.overflow = previousOverflow;
   }
 }
