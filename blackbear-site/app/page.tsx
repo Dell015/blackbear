@@ -13,6 +13,8 @@ import Events from "@/components/Events";
 import Gallery from "@/components/Gallery";
 import Footer from "@/components/Footer";
 import MobileBar from "@/components/MobileBar";
+import VisitGuide from "@/components/VisitGuide";
+import ClubPreview from "@/components/ClubPreview";
 
 export default function Page() {
   return (
@@ -22,6 +24,7 @@ export default function Page() {
       <main id="main" tabIndex={-1}>
         <Hero />
         <Ticker />
+        <VisitGuide />
         <Story />
         <Fuel />
         <Series />
@@ -29,6 +32,7 @@ export default function Page() {
         <Cakes />
         <Campsites />
         <Events />
+        <ClubPreview />
         <Gallery />
       </main>
       <Footer />

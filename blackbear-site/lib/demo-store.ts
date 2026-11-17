@@ -2,7 +2,7 @@
 import { useSyncExternalStore } from "react";
 import { branches, cakeStory, cakeStoryDate } from "./data";
 
-export type CampUpdate = { cakes: string[]; updated: string | null; soldOut: string[]; note: string; hoursDraft: string };
+export type CampUpdate = { cakes: string[]; updated: string | null; soldOut: string[]; note: string; hoursDraft: string; featuredPhoto?: string };
 export type CampPhoto = { id: string; src: string; caption: string; author: string; branch: string; approved: boolean; winner: boolean; created: string };
 export type CrewProfile = { id: string; name: string; branch: string; specialty: string; onDuty: boolean };
 export type DemoState = {

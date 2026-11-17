@@ -58,6 +58,9 @@ export default function Footer() {
               <li>
                 <a href="#events">Private events</a>
               </li>
+              <li><a href="/club">Bear Scout Club · concept</a></li>
+              <li><a href="/admin">Team &amp; owner workspace</a></li>
+              <li><a href="/pitch">The pitch</a></li>
               <li>
                 <a href="#top">Back to top</a>
               </li>

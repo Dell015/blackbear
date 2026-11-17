@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { brand, drinkAddOns, drinks, food, foodAddOns, readyToDrink, sizeLegend, type DrinkSection, type FoodItem, type FoodSection } from "@/lib/data";
+import { brand, branches, drinkAddOns, drinks, food, foodAddOns, readyToDrink, sizeLegend, type DrinkSection, type FoodItem, type FoodSection } from "@/lib/data";
+import { useDemo } from "@/lib/demo-store";
 import Img from "./Img";
 import { IconClose, IconSearch, TagFav, TagSig, TagVeg, Tags } from "./Icons";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -22,7 +23,7 @@ function Hl({ text, q }: { text: string; q: string }) {
   );
 }
 
-function FoodBoard({ s, q, forest }: { s: FoodSection; q: string; forest?: boolean }) {
+function FoodBoard({ s, q, forest, unavailable }: { s: FoodSection; q: string; forest?: boolean; unavailable: string[] }) {
   return (
     <article className={`board ${forest ? "board--forest" : ""}`} id={`m-${s.id}`}>
       {s.image && !q && (
@@ -47,6 +48,7 @@ function FoodBoard({ s, q, forest }: { s: FoodSection; q: string; forest?: boole
               </span>
               <span className="item__price">₱{it.price}</span>
               {it.kcal && <span className="item__meta">{it.kcal} kcal</span>}
+              {unavailable.includes(it.name) && <span className="item__unavailable">Unavailable · local demo</span>}
             </li>
           ))}
         </ul>
@@ -56,7 +58,7 @@ function FoodBoard({ s, q, forest }: { s: FoodSection; q: string; forest?: boole
   );
 }
 
-function DrinkBoard({ s, q, forest }: { s: DrinkSection; q: string; forest?: boolean }) {
+function DrinkBoard({ s, q, forest, unavailable }: { s: DrinkSection; q: string; forest?: boolean; unavailable: string[] }) {
   return (
     <article className={`board ${forest ? "board--forest" : ""}`} id={`m-${s.id}`}>
       {s.image && !q && (
@@ -90,6 +92,7 @@ function DrinkBoard({ s, q, forest }: { s: DrinkSection; q: string; forest?: boo
                     <Tags tags={it.tags} />
                     <div>
                       <Hl text={it.name} q={q} />
+                      {unavailable.includes(it.name) && <span className="drink__unavailable">Unavailable · local demo</span>}
                       {(it.note || it.kcal) && <small>{[it.note, it.kcal ? `${it.kcal} kcal` : ""].filter(Boolean).join(" · ")}</small>}
                     </div>
                   </div>
@@ -134,6 +137,9 @@ function AddOns({ title, items, q }: { title: string; items: FoodItem[]; q: stri
 }
 
 export default function Menu() {
+  const demo = useDemo();
+  const [camp, setCamp] = useState("cauayan-d1");
+  const unavailable = demo.camps[camp].soldOut;
   const [mode, setMode] = useState<Mode>("food");
   const [q, setQ] = useState("");
   const [tag, setTag] = useState<"all" | "fav" | "sig" | "veg">("all");
@@ -141,6 +147,11 @@ export default function Menu() {
   const boardsRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const query = q.trim();
+  useEffect(() => {
+    const sync = () => { try { const saved = localStorage.getItem("bb-fav-camp"); if (saved && branches.some((branch) => branch.id === saved)) setCamp(saved); } catch {} };
+    sync(); window.addEventListener("bb:favorite",sync);
+    return () => window.removeEventListener("bb:favorite",sync);
+  }, []);
 
   const match = (item: { name: string; tags?: string[] }) => (!query || norm(item.name).includes(norm(query))) && (tag === "all" || item.tags?.includes(tag));
 
@@ -259,6 +270,7 @@ export default function Menu() {
           </div>
           <span className="menu__results" role="status" aria-live="polite" aria-atomic="true">{here} {mode === "food" ? "picks" : "drinks"}{query ? ` for “${query}”` : " to explore"}</span>
         </div>
+        <div className="menu__camp"><label>Availability at <select value={camp} onChange={(event) => { setCamp(event.target.value); try { localStorage.setItem("bb-fav-camp",event.target.value); window.dispatchEvent(new Event("bb:favorite")); } catch {} }}>{branches.map((branch) => <option key={branch.id} value={branch.id}>{branch.name}</option>)}</select></label><span>{unavailable.length ? `${unavailable.length} items flagged unavailable in this local demo` : "Call your camp to confirm availability"}</span></div>
         <div className="legend">
           <span>
             <TagFav className="tag-icon" /> Fan&apos;s favorite
@@ -295,8 +307,8 @@ export default function Menu() {
         ) : (
           <div className="boards" ref={boardsRef}>
             {mode === "food"
-              ? foodF.map((s, i) => <FoodBoard key={s.id} s={s} q={q} forest={s.id === "pizza"} />)
-              : drinkF.map((s, i) => <DrinkBoard key={s.id} s={s} q={q} forest={s.id === "shaken" || s.id === "protein"} />)}
+              ? foodF.map((s) => <FoodBoard key={s.id} s={s} q={query} forest={s.id === "pizza"} unavailable={unavailable} />)
+              : drinkF.map((s) => <DrinkBoard key={s.id} s={s} q={query} forest={s.id === "shaken" || s.id === "protein"} unavailable={unavailable} />)}
             {mode === "food" && fAdd.length > 0 && <AddOns title="Food Add-ons" items={fAdd} q={q} />}
             {mode === "drinks" && dAdd.length > 0 && <AddOns title="Drink Add-ons & Ready to Drink" items={dAdd} q={q} />}
           </div>

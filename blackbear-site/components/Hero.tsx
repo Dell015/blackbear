@@ -114,7 +114,7 @@ export default function Hero() {
             See the menu
           </a>
         </div>
-        <p className="hero__note" data-intro>Good coffee. Real food. Your kind of company.</p>
+        <p className="hero__note" data-intro>Coffee, all-day brunch &amp; cake.<br />Seven campsites across Isabela &amp; Cagayan.</p>
       </div>
 
       <div className="hero__scene" aria-hidden>

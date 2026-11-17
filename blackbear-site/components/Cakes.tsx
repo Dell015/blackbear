@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { branches, cakeStory, cakeStoryDate, cakes } from "@/lib/data";
 import Img from "./Img";
 import { CakeDrawn, DiamondRow } from "./Doodles";
 import { IconPhone } from "./Icons";
+import { useDemo } from "@/lib/demo-store";
 
 const dateLabel = new Date(cakeStoryDate + "T00:00:00+08:00").toLocaleDateString("en-PH", {
   month: "long",
@@ -13,10 +14,17 @@ const dateLabel = new Date(cakeStoryDate + "T00:00:00+08:00").toLocaleDateString
 });
 
 export default function Cakes() {
-  const withStory = Object.keys(cakeStory).map((id) => branches.find((b) => b.id === id)!).filter(Boolean);
+  const demo = useDemo();
+  const withStory = branches;
   const [sel, setSel] = useState(withStory[0].id);
+  useEffect(() => {
+    const sync = () => { try { const saved = localStorage.getItem("bb-fav-camp"); if (saved && branches.some((branch) => branch.id === saved)) setSel(saved); } catch {} };
+    sync(); window.addEventListener("bb:favorite",sync);
+    return () => window.removeEventListener("bb:favorite",sync);
+  }, []);
   const b = branches.find((x) => x.id === sel)!;
-  const list = (cakeStory[sel] ?? []).map((id) => cakes.find((c) => c.id === id)!).filter(Boolean);
+  const local = demo.camps[sel];
+  const list = local.cakes.map((id) => cakes.find((c) => c.id === id)!).filter(Boolean);
 
   return (
     <section className="section section--forest cakes" id="cakes">
@@ -59,7 +67,7 @@ export default function Cakes() {
         <div className="cake-board" id="cake-panel" role="tabpanel" aria-labelledby={`cake-tab-${sel}`} tabIndex={0}>
           <div className="cake-board__head">
             <h3 className="display h3">{b.name}</h3>
-            <span className="pill">Sample selection · {dateLabel}</span>
+            <span className="pill">{local.updated ? `Local demo update · ${local.updated}` : `Sample selection · ${dateLabel}`}</span>
           </div>
           {list.length ? (
             <div className="cake-grid" key={sel}>
@@ -81,11 +89,12 @@ export default function Cakes() {
             </div>
           ) : (
             <div className="cake-empty">
-              <div className="hand">No cake story posted yet today.</div>
+              <div className="hand">No cake selection listed for this camp.</div>
+              <p>Call the crew to ask what&apos;s in the case.</p>
             </div>
           )}
           <div className="cake-foot">
-            <span>Sample day copied from Black Bear&apos;s Cake Story. Slices go fast, so call ahead to reserve one.</span>
+            <span>{local.updated ? "Updated in this browser’s workspace demo. Call the crew to confirm real availability." : "A sample day from Black Bear’s Cake Story. Call ahead for today’s selection."}</span>
             {b.phone && (
               <a className="btn btn--cream btn--small" href={`tel:${b.phone.replace(/\s/g, "")}`}>
                 <IconPhone /> Call {b.short}

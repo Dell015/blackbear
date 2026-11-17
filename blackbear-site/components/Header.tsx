@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import { brand } from "@/lib/data";
 import { useDialog } from "@/lib/useDialog";
 import { IconClose, IconFacebook, IconInstagram, IconMail, IconPin } from "./Icons";
+import LogoMotion from "./LogoMotion";
 
 const links = [
   { href: "#menu", label: "Menu" },
   { href: "#cakes", label: "Cakes" },
   { href: "#campsites", label: "Campsites" },
-  { href: "#story", label: "Our story" },
-  { href: "#events", label: "Gatherings" },
+  { href: "/club", label: "The club" },
+  { href: "/pitch", label: "The pitch ↗" },
 ];
 
 export default function Header() {
@@ -39,7 +40,7 @@ export default function Header() {
       <a href="#main" className="skip-link">Skip to content</a>
       <header className={`header ${solid ? "is-solid" : ""}`}>
         <div className="wrap header__inner">
-          <a href="#top" className="logo" aria-label="Black Bear Kitchen + Coffee, back to top"><span className="wordmark">Black Bear</span><small>KITCHEN+COFFEE</small></a>
+          <a href="#top" className="logo logo--animated" aria-label="Black Bear Kitchen + Coffee, back to top"><LogoMotion /><span><span className="wordmark">Black Bear</span><small>KITCHEN+COFFEE</small></span></a>
           <nav className="nav" aria-label="Main">
             {links.map((link) => <a key={link.href} href={link.href} aria-current={active === link.href ? "location" : undefined}>{link.label}</a>)}
           </nav>

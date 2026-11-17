@@ -4,6 +4,7 @@ import { branches, cakeStory, cakeStoryDate, cakes, type Branch } from "@/lib/da
 import { hoursText, manilaNow, statusOf, type Status } from "@/lib/hours";
 import Img from "./Img";
 import { useDialog } from "@/lib/useDialog";
+import { useDemo } from "@/lib/demo-store";
 import { IconArrowRight, IconBookmark, IconClose, IconDirections, IconPhone, IconShare } from "./Icons";
 
 /* --------------------------- trail map --------------------------- */
@@ -112,6 +113,7 @@ function Sheet({
   toast: (m: string) => void;
 }) {
   const open = !!b;
+  const demo = useDemo();
   const dialog = useDialog<HTMLElement>(open, onClose);
 
   const [last, setLast] = useState<Branch | null>(null);
@@ -135,7 +137,8 @@ function Sheet({
     }
   };
 
-  const todays = x && cakeStory[x.id] ? cakeStory[x.id].map((id) => cakes.find((c) => c.id === id)?.name).filter(Boolean) : [];
+  const update = x ? demo.camps[x.id] : null;
+  const todays = update ? update.cakes.map((id) => cakes.find((c) => c.id === id)?.name).filter(Boolean) : [];
 
   return (
     <>
@@ -169,6 +172,7 @@ function Sheet({
                 {x.address}
                 {!x.addressConfirmed && <span className="confirm">to confirm</span>}
               </div>
+              {update?.note && <div className="sheet__update"><span className="eyebrow">A note from camp · local demo</span>{update.featuredPhoto && <img src={update.featuredPhoto} alt={`Photo selected for ${x.name}'s local update`} />}<p>{update.note}</p></div>}
               <div className="sheet__actions">
                 <a className="act" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(x.mapQuery)}`} target="_blank" rel="noreferrer" tabIndex={open ? 0 : -1}>
                   <IconDirections /> Directions
@@ -209,7 +213,7 @@ function Sheet({
                 )}
                 {todays.length > 0 && (
                   <div className="sheet__row" style={{ display: "grid", gap: 8 }}>
-                    <span>Sample cakes · {cakeStoryDate}</span>
+                    <span>{update?.updated ? `Demo cakes · ${update.updated}` : `Sample cakes · ${cakeStoryDate}`}</span>
                     <span className="sheet__cakes">
                       {todays.map((n) => (
                         <span key={n} className="pill pill--tan">
@@ -259,6 +263,7 @@ export default function Campsites() {
     try {
       if (next) localStorage.setItem("bb-fav-camp", next);
       else localStorage.removeItem("bb-fav-camp");
+      window.dispatchEvent(new Event("bb:favorite"));
     } catch {}
     setMsg(next ? "Saved as your camp" : "Removed from favorites");
   };
