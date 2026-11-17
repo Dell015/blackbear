@@ -1,3 +1,4 @@
+> **November 18, 2026 upgrade:** The owner requested a broader frontend-only product and client pitch. Read `README.md` first; it describes the implemented shortcut hub and focused pages and local demo flows. The historical one-page layout and postponed-admin notes below are superseded by that explicit request. Source menu/branch facts, no Git writes, noindex, supplied artwork, and preview-only usage constraints remain. Typography now pairs Archivo prose with mono menu/labels. Native scrolling is used with GSAP visual motion. `/club`, `/admin`, and `/pitch` are implemented local demos; do not claim backend synchronization, authenticated access, real rewards, or live availability.
 # HANDOFF: Black Bear Kitchen + Coffee prototype
 
 For the next builder (GPT-6.1 Sol). Read this whole file before changing anything.
@@ -124,3 +125,5 @@ Before you hand over, do all of this:
 QA will check: the rules above, contrast, tap targets of at least 44px, sticky bars not covering content, every link and button doing something, empty and long-text states, that price and branch data are unchanged unless requested, and that motion matches section 5.
 
 To keep handovers small, send only the changed files plus the screenshots, not the whole repo.
+
+

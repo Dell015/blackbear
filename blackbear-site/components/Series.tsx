@@ -17,23 +17,56 @@ export default function Series() {
               Pick your trail
             </h2>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end", gap: 20, flexWrap: "wrap" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "end",
+              gap: 20,
+              flexWrap: "wrap",
+            }}
+          >
             <p className="lead" style={{ margin: 0 }} data-reveal>
-              Matcha, protein, refreshers, decaf and smoothies. Each series has its own look in the Black Bear cup.
+              Matcha, protein, refreshers, decaf and smoothies. Each series has
+              its own look in the Black Bear cup.
             </p>
             <RailNav target={rail} />
           </div>
         </div>
         <div className="rail" ref={rail} data-stagger>
           {series.map((s) => (
-            <a className="series-card" key={s.id} href="#menu" onClick={() => window.dispatchEvent(new CustomEvent("bb:menu", { detail: { mode: "drinks", query: s.id === "decaf" ? "" : s.id === "refreshers" ? "refresher" : s.id === "smoothies" ? "" : s.id } }))}>
+            <a
+              className="series-card"
+              key={s.id}
+              href={`/menu?type=drinks&category=${s.id === "decaf" ? "drink-add-ons" : s.id}`}
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("bb:menu", {
+                    detail: {
+                      mode: "drinks",
+                      query:
+                        s.id === "decaf"
+                          ? ""
+                          : s.id === "refreshers"
+                            ? "refresher"
+                            : s.id === "smoothies"
+                              ? ""
+                              : s.id,
+                    },
+                  }),
+                )
+              }
+            >
               <div className="series-card__img">
                 <Img slug={s.image} alt={s.title} sizes="360px" />
               </div>
               <div className="series-card__body">
                 <h3 className="display">{s.title}</h3>
                 <p>{s.line}</p>
-                <span className="series-card__from">{s.fromLabel ?? `From ₱${s.from}`} <span aria-hidden="true">↗</span></span>
+                <span className="series-card__from">
+                  {s.fromLabel ?? `From ₱${s.from}`}{" "}
+                  <span aria-hidden="true">↗</span>
+                </span>
               </div>
             </a>
           ))}

@@ -1,57 +1,82 @@
-# Black Bear Kitchen + Coffee: website prototype
+# Black Bear Kitchen + Coffee — connected frontend concept
 
-A one-page concept site for Black Bear (7 campsites, Isabela + Cagayan).
-Next.js App Router, one handwritten `app/globals.css`, GSAP (ScrollTrigger + DrawSVG) and Lenis.
-There's no server or database: favorites are saved in the visitor's browser.
+A client-pitch prototype built with Next.js App Router, React, local Fontsource fonts, GSAP, responsive WebP images, and one handwritten stylesheet.
 
-## Run it
+## Start
 
-```bash
+```sh
 npm install
-npm run dev            # http://localhost:3000
-npm run build && npm start   # production check (use this for QA)
+npm run dev
 ```
 
-## Where things live
+The default preview is http://localhost:3000. The mobile bar always offers Home, Menu, Camps, and Call. For a production check:
 
-| What | File |
-|---|---|
-| Menu, prices, branches, cakes, series, gallery | `lib/data.ts` |
-| Open/closed logic (Philippine time) | `lib/hours.ts` |
-| Styles and design tokens | `app/globals.css` |
-| Global scroll + reveal/draw animations | `components/Motion.tsx` |
-| Sections | `components/*.tsx` (Hero, Story, Fuel, Series, Menu, Cakes, Campsites, Events, Gallery, Footer) |
-| Image pipeline | `scripts/build-images.py`, which writes `public/img/*.webp` and `lib/images.json` |
+```sh
+npx tsc --noEmit
+npm run build
+npm start
+```
 
-To re-process images after Black Bear sends originals, run `python3 scripts/build-images.py "E:/Coding-Projects/blackbear/Assets"`.
+## One shortcut hub, focused pages
 
-### Motion hooks (add to any element)
-- `data-reveal` (with optional `data-delay="0.1"`): fades and rises in
-- `data-stagger`: its children reveal one after another
-- `data-draw` (on SVG strokes): pen-draws when its SVG scrolls in
-- `data-pop`: the price stamp pops with a twist
-- `data-parallax="0.15"`: drifts on scroll
+| Route | Purpose |
+| --- | --- |
+| `/` | Compact shortcut hub with eight destinations and a saved campsite |
+| `/menu` | One menu category at a time, kitchen favorites, search, quick views, sizes, and saved picks |
+| `/cakes` | Cake Story by campsite |
+| `/campsites` | Searchable campsite list, optional trail map, details and calls |
+| `/story` | The brand and its people |
+| `/events` | Conference-room and private-gathering information |
+| `/gallery` | A paginated gallery and links to the social feed |
+| `/club` | Separate Passport, Crew, and Moments tabs for the proposed customer club |
+| `/admin` | Owner overview and staff workspace: branch cakes and notes, menu availability, shared media, photo moderation, crew profiles |
+| `/pitch` | Audience walkthrough, working feature demos, connected workflow, animated logo showcase, production roadmap, printable pitch |
 
-All of these are disabled under `prefers-reduced-motion`.
+## Demo walkthrough
 
-## Deploy (Vercel)
-1. Push to GitHub yourself (the assistant does not do git).
-2. In Vercel, use Add New Project and import the repo. The framework is auto-detected.
-3. Set `NEXT_PUBLIC_SITE_URL` to the live URL.
-4. The site is already `noindex` (`app/layout.tsx` → `robots`). Remove that only after Black Bear approves.
+1. On the customer site, browse menu categories, open a dish, choose a listed size, and save a pick.
+2. In Workspace → Camps, choose a campsite, change its cake lineup, write a note, and publish locally.
+3. Return to the public Cake Story or campsite detail to see that update.
+4. In Workspace → Menu, flag an item unavailable. Choose that campsite in the customer menu to see its demo availability label.
+5. In the Club, simulate visits and try the proposed reward redemption after six stamps.
+6. Submit a JPG, PNG, or WebP photo in the Club. In Workspace → Media → Review queue, approve it. It appears on the Club wall and can be reused in a branch update.
+7. Edit an illustrative crew profile or its duty status; see the result in the Club for that campsite.
+8. Open Pitch to explain these workflows and the next phase.
 
-## Placeholders / to confirm with Black Bear
-- **Hours:** only Santiago (24/7) is confirmed. Cauayan D1 (Waze) and Cauayan SF (Foodpanda) come from third-party listings. Tuguegarao, Ilagan, Roxas and Alicia are unknown.
-- **Addresses:** Roxas and Alicia are unknown. Cauayan SF is from Foodpanda. A branch card says "SM Cauayan Branch, 46 Burgos St." Check whether that's San Fermin or a different branch.
-- **Phones:** Roxas and Tuguegarao are unknown.
-- **Map:** the trail map is schematic (not to scale). Directions use Google Maps search queries until real pins are supplied.
-- **Cakes:** the Cake Story is sample data from Nov 17, 2026. Prices are unknown. Blueberry Cheesecake, Sans Rival, Belgian Cookie Cheesecake and Carrot Walnut have no photos yet.
-- **Story copy:** written from their branding. Confirm the tone and facts with the owner.
-- **Events copy:** based on their conference room poster. Confirm the rental details.
-- **Photos:** taken from their public Facebook/Instagram posts, for the preview only. Replace them with originals.
-- **Logo:** the preloader and favicon use the badge from Facebook. Ask for vector files.
+## Local data and boundaries
 
-## Next phases (not built)
-- Admin: staff update today's cakes, sold-out items, hours and promos, with optional posting to Facebook/Instagram.
-- Pickup / cake pre-order requests.
-- Time-of-day theme (morning / day / golden hour / night).
+`lib/demo-store.ts` connects the frontend views through localStorage. Updates persist in this browser and synchronize between same-origin tabs. Different hosts or ports have separate data. This is not a shared server, secure admin, ordering system, real loyalty program, or active photo contest.
+
+- Workspace state: `bb-workspace-v1`
+- Favorite campsite: `bb-fav-camp`
+- Motion preference: `bb-reduced-motion`
+- Intro session flag: `bb-intro`
+
+Photos are resized in the browser, stored locally, and never uploaded. The demo allows up to 12 photo submissions, 8 MB per selected source file, and 20 illustrative crew profiles. Browser storage quotas still apply; failed saves show a message. No private records or credentials should be entered.
+
+## Sources and presentation
+
+`lib/data.ts` remains unchanged: menu names, source prices, tags, cup sizes, branch facts, and the dated Cake Story stay tied to the supplied assets. Only confirmed hours are described as open/closed. The QR menu reference is https://blackbearcoffee.my.canva.site/big-stores.
+
+`lib/menu-details.ts` adds brief editorial browsing guides and exact photo mappings where supplied. Missing item photos are stated honestly; no replacement food photos are invented. Descriptions are not ingredient/allergen specifications.
+
+The logo animation uses the existing badge artwork with an entrance, outer-ring draw, sparkle, and hover nod. No logo was redrawn. Motion can be reduced from the footer or app view strip and respects the operating-system setting. Scrolling uses native browser behavior; GSAP handles reveal, doodle, and parallax effects.
+
+Robots remain `noindex, nofollow`. Photos and artwork are concept-preview material pending the owner's usage approval. The rewards policy, photo spotlight, and crew profiles are illustrative. See the Pitch roadmap before a real launch.
+
+## Maintenance
+
+- Content: `lib/data.ts`
+- Photo/description map and item identity: `lib/menu-details.ts`
+- Local workflow state: `lib/demo-store.ts`
+- Accessibility focus trap: `lib/useDialog.ts`
+- Motion setting: `lib/motion-preference.ts`
+- Styles: `app/globals.css` (new refinement sections are appended)
+- Production type checking is enabled.
+- On Windows, `scripts/build.mjs` loads a build-only compatibility helper that serializes generated `.next` directory creation and briefly retries transient filesystem errors. Dependencies and production runtime behavior are unchanged. Recheck this helper when upgrading Next.js.
+
+No Git commit, push, deployment, or external message was performed.
+
+
+
+

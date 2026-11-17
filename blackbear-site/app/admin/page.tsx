@@ -2,34 +2,163 @@
 import { useEffect, useState } from "react";
 import AppNav from "@/components/AppNav";
 import Img, { imgInfo } from "@/components/Img";
-import { IconArrowRight, IconCheck, IconClose, IconPin } from "@/components/Icons";
+import {
+  IconArrowRight,
+  IconCheck,
+  IconClose,
+  IconPin,
+} from "@/components/Icons";
 import { branches, cakes, food, drinks, gallery } from "@/lib/data";
-import { changeDemo, localDate, prettyTime, updateCamp, useDemo, type CampPhoto, type CampUpdate, type CrewProfile } from "@/lib/demo-store";
+import {
+  changeDemo,
+  localDate,
+  prettyTime,
+  updateCamp,
+  useDemo,
+  type CampPhoto,
+  type CampUpdate,
+  type CrewProfile,
+} from "@/lib/demo-store";
 import { menuKey } from "@/lib/menu-details";
 
 type Tab = "overview" | "camps" | "menu" | "media" | "crew";
-const tabs: { id: Tab; name: string; short: string }[] = [{id:"overview",name:"At a glance",short:"Overview"},{id:"camps",name:"Campsite desk",short:"Camps"},{id:"menu",name:"Menu & availability",short:"Menu"},{id:"media",name:"Shared media",short:"Media"},{id:"crew",name:"The crew",short:"Crew"}];
-const menuEntries = [...food.flatMap((section) => section.items.map((item) => ({ name:item.name,category:section.title,key:menuKey(section.title,item.name) }))), ...drinks.flatMap((section) => section.items.map((item) => ({name:item.name,category:section.title,key:menuKey(section.title,item.name)})))];
+const tabs: { id: Tab; name: string; short: string }[] = [
+  { id: "overview", name: "At a glance", short: "Overview" },
+  { id: "camps", name: "Campsite desk", short: "Camps" },
+  { id: "menu", name: "Menu & availability", short: "Menu" },
+  { id: "media", name: "Shared media", short: "Media" },
+  { id: "crew", name: "The crew", short: "Crew" },
+];
+const menuEntries = [
+  ...food.flatMap((section) =>
+    section.items.map((item) => ({
+      name: item.name,
+      category: section.title,
+      key: menuKey(section.title, item.name),
+    })),
+  ),
+  ...drinks.flatMap((section) =>
+    section.items.map((item) => ({
+      name: item.name,
+      category: section.title,
+      key: menuKey(section.title, item.name),
+    })),
+  ),
+];
 
-function CampEditor({ id, onMessage }: { id: string; onMessage: (message: string) => void }) {
+function CampEditor({
+  id,
+  onMessage,
+}: {
+  id: string;
+  onMessage: (message: string) => void;
+}) {
   const state = useDemo();
   const saved = state.camps[id];
   const [draft, setDraft] = useState<CampUpdate>(saved);
   const [dirty, setDirty] = useState(false);
-  useEffect(() => { if (!dirty) setDraft(saved); },[saved,dirty]);
+  useEffect(() => {
+    if (!dirty) setDraft(saved);
+  }, [saved, dirty]);
   const branch = branches.find((item) => item.id === id)!;
-  const patch = (value: Partial<CampUpdate>) => { setDraft((current) => ({ ...current, ...value })); setDirty(true); };
-  return <form className="app-card camp-editor" onSubmit={(event) => {
-    event.preventDefault();
-    const ok = updateCamp(id, { ...draft, updated: localDate() }, `${branch.short} published a local cake and availability update`);
-    if (ok) setDirty(false);
-    onMessage(ok ? `Local update published for ${branch.short}. The customer site now reflects it in this browser.` : "Your browser could not save this update. Storage may be full.");
-  }}><div className="app-card__head"><div><span className="eyebrow">Branch publishing desk</span><h2>{branch.name}</h2></div><span className={`workspace-status ${dirty ? "is-warning" : ""}`}>{dirty ? "Unsaved changes" : saved.updated === localDate() ? "Local update saved today" : "Using sample cake lineup"}</span></div>
-    <label className="app-field"><span>A note from the camp</span><textarea rows={3} maxLength={220} value={draft.note} onChange={(event) => patch({ note: event.target.value })} placeholder="A short update from the crew: what should visitors know?" /><small>Shown on the customer site as a local demo update. Avoid promises the crew cannot confirm.</small></label>
-    <fieldset className="cake-editor"><legend>Cakes in the case</legend><p>Choose from the existing Cake Story catalog. No prices are invented.</p><div className="check-grid">{cakes.map((cake) => <label className="check-field" key={cake.id}><input type="checkbox" checked={draft.cakes.includes(cake.id)} onChange={(event) => patch({ cakes: event.target.checked ? [...draft.cakes, cake.id] : draft.cakes.filter((item) => item !== cake.id) })} /><span>{cake.name}</span></label>)}</div></fieldset>
-    <label className="app-field"><span>Hours draft for review</span><input value={draft.hoursDraft} onChange={(event) => patch({ hoursDraft: event.target.value })} maxLength={100} placeholder="Example draft: daily, 8 AM–9 PM" /><small>Internal draft only. Confirmed public hours stay unchanged until reviewed.</small></label>
-    <div className="publish-bar"><span>{dirty ? "Ready when the crew is." : "Save a new update to mark this camp as reviewed today."}</span><button className="btn" type="submit">Publish local update <IconArrowRight /></button></div>
-  </form>;
+  const patch = (value: Partial<CampUpdate>) => {
+    setDraft((current) => ({ ...current, ...value }));
+    setDirty(true);
+  };
+  return (
+    <form
+      className="app-card camp-editor"
+      onSubmit={(event) => {
+        event.preventDefault();
+        const ok = updateCamp(
+          id,
+          { ...draft, updated: localDate() },
+          `${branch.short} published a local cake and availability update`,
+        );
+        if (ok) setDirty(false);
+        onMessage(
+          ok
+            ? `Local update published for ${branch.short}. The customer site now reflects it in this browser.`
+            : "Your browser could not save this update. Storage may be full.",
+        );
+      }}
+    >
+      <div className="app-card__head">
+        <div>
+          <span className="eyebrow">Branch publishing desk</span>
+          <h2>{branch.name}</h2>
+        </div>
+        <span className={`workspace-status ${dirty ? "is-warning" : ""}`}>
+          {dirty
+            ? "Unsaved changes"
+            : saved.updated === localDate()
+              ? "Local update saved today"
+              : "Using sample cake lineup"}
+        </span>
+      </div>
+      <label className="app-field">
+        <span>A note from the camp</span>
+        <textarea
+          rows={3}
+          maxLength={220}
+          value={draft.note}
+          onChange={(event) => patch({ note: event.target.value })}
+          placeholder="A short update from the crew: what should visitors know?"
+        />
+        <small>
+          Shown on the customer site as a local demo update. Avoid promises the
+          crew cannot confirm.
+        </small>
+      </label>
+      <fieldset className="cake-editor">
+        <legend>Cakes in the case</legend>
+        <p>
+          Choose from the existing Cake Story catalog. No prices are invented.
+        </p>
+        <div className="check-grid">
+          {cakes.map((cake) => (
+            <label className="check-field" key={cake.id}>
+              <input
+                type="checkbox"
+                checked={draft.cakes.includes(cake.id)}
+                onChange={(event) =>
+                  patch({
+                    cakes: event.target.checked
+                      ? [...draft.cakes, cake.id]
+                      : draft.cakes.filter((item) => item !== cake.id),
+                  })
+                }
+              />
+              <span>{cake.name}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <label className="app-field">
+        <span>Hours draft for review</span>
+        <input
+          value={draft.hoursDraft}
+          onChange={(event) => patch({ hoursDraft: event.target.value })}
+          maxLength={100}
+          placeholder="Example draft: daily, 8 AM–9 PM"
+        />
+        <small>
+          Internal draft only. Confirmed public hours stay unchanged until
+          reviewed.
+        </small>
+      </label>
+      <div className="publish-bar">
+        <span>
+          {dirty
+            ? "Ready when the crew is."
+            : "Save a new update to mark this camp as reviewed today."}
+        </span>
+        <button className="btn" type="submit">
+          Publish local update <IconArrowRight />
+        </button>
+      </div>
+    </form>
+  );
 }
 
 export default function AdminPage() {
@@ -48,34 +177,793 @@ export default function AdminPage() {
     const selected = new URLSearchParams(window.location.search).get("tab");
     if (tabs.some((item) => item.id === selected)) setTab(selected as Tab);
   }, []);
-  const chooseTab = (next: Tab) => { setTab(next); history.replaceState(null, "", `/admin?tab=${next}`); setQuery(""); };
+  const chooseTab = (next: Tab) => {
+    setTab(next);
+    history.replaceState(null, "", `/admin?tab=${next}`);
+    setQuery("");
+  };
   const camp = branches.find((item) => item.id === branch)!;
   const current = state.camps[branch];
-  const updated = branches.filter((item) => state.camps[item.id].updated === localDate()).length;
+  const updated = branches.filter(
+    (item) => state.camps[item.id].updated === localDate(),
+  ).length;
   const pending = state.photos.filter((item) => !item.approved);
-  const soldOut = Object.values(state.camps).reduce((total, item) => total + item.soldOut.length, 0);
-  const tell = (ok: boolean, success: string) => setMessage(ok ? success : "The change could not be saved. Check browser storage.");
-  const updateCrew = (id: string, patch: Partial<CrewProfile>) => tell(changeDemo((current) => ({ ...current, crew: current.crew.map((person) => person.id === id ? { ...person, ...patch } : person) }), "A demo crew profile was updated"), "Crew profile updated locally. The Club view reflects it.");
-  const usePhoto = (src: string) => tell(updateCamp(branch, { featuredPhoto: src }, `${camp.short} selected a photo from the shared pool`), `Photo attached to ${camp.short}'s local update. Publish a note at the campsite desk.`);
-  return <div className="workspace-page"><AppNav active="admin" /><main id="app-main" className="workspace-layout" tabIndex={-1}>
-    <aside className="workspace-sidebar"><div className="workspace-sidebar__title"><span className="eyebrow">Behind the coffee bar</span><b>Camp<br /><span className="script">control.</span></b></div><nav aria-label="Workspace sections">{tabs.map((item, index) => <button key={item.id} className={tab === item.id ? "is-active" : ""} aria-current={tab === item.id ? "page" : undefined} onClick={() => chooseTab(item.id)}><small>0{index+1}</small><span>{item.name}</span><IconArrowRight /></button>)}</nav><div className="workspace-sidebar__note"><b>One brand. Seven camps.</b><p>A shared place for the little things that keep each campsite in sync.</p><a href="/pitch">Explore the full vision <IconArrowRight /></a></div></aside>
-    <div className="workspace-content"><div className="workspace-top"><div><span className="eyebrow">{role === "owner" ? "Owner overview" : "Team workspace"} / local demo</span><h1>{tab === "overview" ? "A good day starts here." : tabs.find((item) => item.id === tab)?.name}</h1><p>{tab === "overview" ? "The whole camp, without the group-chat scroll." : "Small updates. One familiar experience across every campsite."}</p></div><div className="workspace-role" role="group" aria-label="Preview perspective"><button aria-pressed={role === "owner"} onClick={() => setRole("owner")}>Owner</button><button aria-pressed={role === "staff"} onClick={() => { setRole("staff"); chooseTab("camps"); }}>Staff</button></div></div>
-      <div className="workspace-context"><label><IconPin /><span className="sr-only">Working campsite</span><select value={branch} onChange={(event) => setBranch(event.target.value)}>{branches.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><span>Preview role switch only · no authentication or permissions</span><a href="/" target="_blank" rel="noreferrer">Customer view <span aria-hidden="true">↗</span></a></div>
-      {tab === "overview" && <>
-        <div className="stat-grid"><article><span>Camps reviewed today</span><b>{updated}<small> / 7</small></b><p>{7-updated} waiting for a local update</p></article><article><span>Availability flags</span><b>{soldOut.toString().padStart(2,"0")}</b><p>Items marked unavailable locally</p></article><article><span>Photos to review</span><b>{pending.length.toString().padStart(2,"0")}</b><p>Customer moments in the queue</p></article><article><span>Crew on duty</span><b>{state.crew.filter((person) => person.onDuty).length.toString().padStart(2,"0")}</b><p>Illustrative crew profiles</p></article></div>
-        <div className="workspace-two"><section className="app-card"><div className="app-card__head"><div><span className="eyebrow">Across the campsites</span><h2>The daily check-in.</h2></div><span className="pill">{localDate()} / PH</span></div><div className="branch-health">{branches.map((item) => { const update = state.camps[item.id]; return <button key={item.id} onClick={() => { setBranch(item.id); chooseTab("camps"); }}><span><b>{item.name}</b><small>{update.updated === localDate() ? `${update.cakes.length} cakes in local update` : "Cake lineup needs today's review"}</small></span><span className={`workspace-status ${update.updated === localDate() ? "" : "is-warning"}`}>{update.updated === localDate() ? "Updated" : "Needs review"}</span><IconArrowRight /></button>; })}</div></section><div className="workspace-stack"><section className="workspace-next"><span className="eyebrow">The next useful thing</span><h2>{pending.length ? "A good moment needs a second look." : "Give your camp a fresh little update."}</h2><p>{pending.length ? `${pending.length} customer photo(s) are waiting in the shared review queue.` : "Check the cake case, flag anything sold out, and leave a short note for visitors."}</p><button className="btn btn--cream" onClick={() => { if (pending.length) { chooseTab("media"); setMedia("review"); } else chooseTab("camps"); }}>{pending.length ? "Review customer photos" : "Open campsite desk"}<IconArrowRight /></button></section><section className="app-card activity-feed"><span className="eyebrow">Latest local activity</span>{state.activity.length ? <ol>{state.activity.slice(0,5).map((item) => <li key={item.id}><span>{item.text}</span><small>{prettyTime(item.time)}</small></li>)}</ol> : <div className="app-empty"><p>A quiet start. Publish an update or try a Club action to see the activity here.</p></div>}</section></div></div>
-      </>}
-      {tab === "camps" && <><CampEditor key={branch} id={branch} onMessage={setMessage} /><div className="inline-notice"><IconCheck /><p>Local updates appear in the customer Cake Story and campsite details. This browser is the entire demo; other devices do not receive updates.</p></div></>}
-      {tab === "menu" && <section className="app-card"><div className="app-card__head"><div><span className="eyebrow">One shared menu / branch availability</span><h2>Keep the board honest.</h2></div><span className="pill">{current.soldOut.length} unavailable here</span></div><p className="workspace-description">Menu names and prices stay tied to the supplied boards. Toggle availability for {camp.name}; the customer menu shows a local demo label.</p><label className="app-field"><span>Find an item</span><input value={query} onChange={(event) => setQuery(event.target.value)} type="search" placeholder="Search food or drinks…" /></label><div className="availability-list">{menuEntries.filter((entry) => (entry.name + entry.category).toLowerCase().includes(query.toLowerCase())).map(({name,category,key}) => { const unavailable = current.soldOut.includes(key); return <div key={key}><span>{name}<small className="availability-category">{category}</small></span><button className={`availability-toggle ${unavailable ? "is-off" : ""}`} role="switch" aria-checked={!unavailable} aria-label={`${name} available at ${camp.short} in demo`} onClick={() => tell(updateCamp(branch, { soldOut: unavailable ? current.soldOut.filter((item) => item !== key) : [...current.soldOut, key] }, `${name} marked ${unavailable ? "available" : "unavailable"} at ${camp.short} in the demo`), "Availability updated in this browser.")}><span />{unavailable ? "Unavailable" : "Available"}</button></div>; })}{!menuEntries.some((entry) => (entry.name + entry.category).toLowerCase().includes(query.toLowerCase())) && <div className="app-empty"><p>No menu items match that search.</p><button className="text-link" onClick={() => setQuery("")}>Clear search</button></div>}</div></section>}
-      {tab === "media" && <section className="app-card"><div className="app-card__head"><div><span className="eyebrow">A single shared image pool</span><h2>More moments. Less searching.</h2></div><span className="pill">{gallery.length + state.photos.filter((item) => item.approved).length} reusable demo assets</span></div><p className="workspace-description">Every camp can choose from the same brand library. Customer submissions need approval before appearing in the Club wall. All use here is for the concept preview.</p><div className="workspace-subtabs" role="group" aria-label="Media library view"><button aria-pressed={media === "brand"} onClick={() => setMedia("brand")}>Brand library</button><button aria-pressed={media === "review"} onClick={() => setMedia("review")}>Review queue ({pending.length})</button><button aria-pressed={media === "community"} onClick={() => setMedia("community")}>Community pool</button></div>
-        {media === "review" && <label className="app-field"><span>Review note · required when returning a photo</span><input value={photoReason} onChange={(event) => setPhotoReason(event.target.value)} maxLength={140} placeholder="Explain why the photo needs to be returned…" /></label>}
-        <div className="media-grid">{media === "brand" ? gallery.map((slug) => { const entry = imgInfo(slug); const src = entry?.srcs["960"] ?? Object.values(entry?.srcs ?? {})[0]; return <article className="media-card" key={slug}><Img slug={slug} alt={slug.replaceAll("-"," ")} sizes="260px" /><div><b>{slug.replaceAll("-"," ")}</b><small>Black Bear source photo · preview use</small><button className="text-link" onClick={() => usePhoto(src)}>Use at {camp.short}<IconArrowRight /></button><a href={src} download className="media-download">Download asset</a></div></article>; }) : state.photos.filter((photo) => media === "review" ? !photo.approved : photo.approved).map((photo) => <article className="media-card" key={photo.id}><img src={photo.src} alt={photo.caption} /><div><b>{photo.caption}</b><small>By {photo.author} · {branches.find((item) => item.id === photo.branch)?.short}</small>{media === "review" ? <><button className="btn btn--small" onClick={() => tell(changeDemo((current) => ({...current, photos: current.photos.map((item) => item.id === photo.id ? {...item, approved:true} : item)}), `A customer photo by ${photo.author} was approved for the local demo`), "Photo approved. It now appears on the Club wall.")}>Approve for local wall</button><button className="text-link" disabled={!photoReason.trim()} onClick={() => { const ok = changeDemo((current) => ({ ...current, photos: current.photos.filter((item) => item.id !== photo.id) }), `Photo returned: ${photoReason.trim()}`); if (ok) setRemoved(photo); tell(ok,"Photo returned locally. Undo is available below."); }}>Return photo with note</button></> : <><button className="text-link" onClick={() => usePhoto(photo.src)}>Use at {camp.short}<IconArrowRight /></button><button className="btn btn--small btn--ghost" aria-pressed={photo.winner} onClick={() => tell(changeDemo((current) => ({ ...current, photos: current.photos.map((item) => ({...item,winner:item.id === photo.id ? !photo.winner : false})) }), "The demo photo spotlight was updated"), "Local spotlight updated. No real prize has been issued.")}>{photo.winner ? "Demo spotlight selected" : "Choose demo spotlight"}</button><button className="text-link" onClick={() => tell(changeDemo((current) => ({...current,photos:current.photos.map((item) => item.id === photo.id ? {...item,approved:false,winner:false} : item)}),"A photo was moved back to local review"),"Photo moved back to the review queue.")}>Move back to review</button></>}</div></article>)}</div>
-        {media !== "brand" && !state.photos.some((photo) => media === "review" ? !photo.approved : photo.approved) && <div className="app-empty"><h3>{media === "review" ? "Nothing waiting on the crew." : "The community pool is ready to grow."}</h3><p>Submit a photo in the Club to try this workflow.</p><a className="text-link" href="/club#camp-moments">Share a local photo <IconArrowRight /></a></div>}
-        {removed && <div className="undo-bar"><span>Photo returned with a review note.</span><button onClick={() => { const ok = changeDemo((current) => ({...current,photos:[...current.photos,removed]}),"A returned photo was restored"); if(ok)setRemoved(null); tell(ok,"Photo restored to local review."); }}>Undo return</button></div>}
-      </section>}
-      {tab === "crew" && <section className="app-card"><div className="app-card__head"><div><span className="eyebrow">Familiar faces / illustrative profiles</span><h2>The people make the camp.</h2></div><span className="pill">{state.crew.length} demo profiles</span></div><p className="workspace-description">Keep a simple public introduction, a branch, and a duty flag. Scheduling, private staff records, and customer details would require secure accounts in a later phase.</p><div className="crew-admin-grid">{state.crew.map((person) => <article key={person.id}><span className="crew-card__avatar" aria-hidden="true">{person.name.slice(0,1)}</span><label className="app-field"><span>Display name</span><input defaultValue={person.name} maxLength={40} onBlur={(event) => { const value = event.target.value.trim(); if(value && value !== person.name)updateCrew(person.id,{name:value}); else event.target.value=person.name; }} /></label><label className="app-field"><span>Specialty</span><input defaultValue={person.specialty} maxLength={80} onBlur={(event) => { const value = event.target.value.trim(); if(value && value !== person.specialty)updateCrew(person.id,{specialty:value}); else event.target.value=person.specialty; }} /></label><label className="app-field"><span>Campsite</span><select value={person.branch} onChange={(event) => updateCrew(person.id,{branch:event.target.value})}>{branches.map((item) => <option key={item.id} value={item.id}>{item.short}</option>)}</select></label><button className={`availability-toggle ${!person.onDuty ? "is-off" : ""}`} role="switch" aria-checked={person.onDuty} aria-label={`${person.name} on duty in demo`} onClick={() => updateCrew(person.id,{onDuty:!person.onDuty})}><span />{person.onDuty ? "On duty in demo" : "Off duty in demo"}</button></article>)}</div><form className="crew-add" onSubmit={(event) => { event.preventDefault(); if(!newName.trim() || !newSpecialty.trim())return; const ok = changeDemo((current) => ({...current,crew:[...current.crew,{id:crypto.randomUUID(),name:newName.trim(),specialty:newSpecialty.trim(),branch,onDuty:false}]}),`A demo crew profile was added at ${camp.short}`); if(ok){setNewName("");setNewSpecialty("");} tell(ok,"Crew profile added locally. Real profiles require staff consent."); }}><h3>Add an illustrative crew profile</h3><label className="app-field"><span>Name</span><input value={newName} onChange={(event) => setNewName(event.target.value)} required maxLength={40} placeholder="Demo display name" /></label><label className="app-field"><span>Specialty</span><input value={newSpecialty} onChange={(event) => setNewSpecialty(event.target.value)} required maxLength={80} placeholder="What do they love making?" /></label><button className="btn" disabled={state.crew.length >= 20}>Add to {camp.short}</button></form></section>}
-      <div className="workspace-mobile-tabs" role="navigation" aria-label="Quick workspace navigation">{tabs.map((item) => <button key={item.id} className={tab === item.id ? "is-active" : ""} onClick={() => chooseTab(item.id)}>{item.short}{item.id === "media" && pending.length > 0 && <i>{pending.length}</i>}</button>)}</div>
+  const soldOut = Object.values(state.camps).reduce(
+    (total, item) => total + item.soldOut.length,
+    0,
+  );
+  const tell = (ok: boolean, success: string) =>
+    setMessage(
+      ok ? success : "The change could not be saved. Check browser storage.",
+    );
+  const updateCrew = (id: string, patch: Partial<CrewProfile>) =>
+    tell(
+      changeDemo(
+        (current) => ({
+          ...current,
+          crew: current.crew.map((person) =>
+            person.id === id ? { ...person, ...patch } : person,
+          ),
+        }),
+        "A demo crew profile was updated",
+      ),
+      "Crew profile updated locally. The Club view reflects it.",
+    );
+  const usePhoto = (src: string) =>
+    tell(
+      updateCamp(
+        branch,
+        { featuredPhoto: src },
+        `${camp.short} selected a photo from the shared pool`,
+      ),
+      `Photo attached to ${camp.short}'s local update. Publish a note at the campsite desk.`,
+    );
+  return (
+    <div className="workspace-page">
+      <AppNav active="admin" />
+      <main id="app-main" className="workspace-layout" tabIndex={-1}>
+        <aside className="workspace-sidebar">
+          <div className="workspace-sidebar__title">
+            <span className="eyebrow">Behind the coffee bar</span>
+            <b>
+              Camp
+              <br />
+              <span className="script">control.</span>
+            </b>
+          </div>
+          <nav aria-label="Workspace sections">
+            {tabs.map((item, index) => (
+              <button
+                key={item.id}
+                className={tab === item.id ? "is-active" : ""}
+                aria-current={tab === item.id ? "page" : undefined}
+                onClick={() => chooseTab(item.id)}
+              >
+                <small>0{index + 1}</small>
+                <span>{item.name}</span>
+                <IconArrowRight />
+              </button>
+            ))}
+          </nav>
+          <div className="workspace-sidebar__note">
+            <b>One brand. Seven camps.</b>
+            <p>
+              A shared place for the little things that keep each campsite in
+              sync.
+            </p>
+            <a href="/pitch">
+              Explore the full vision <IconArrowRight />
+            </a>
+          </div>
+        </aside>
+        <div className="workspace-content">
+          <div className="workspace-top">
+            <div>
+              <span className="eyebrow">
+                {role === "owner" ? "Owner overview" : "Team workspace"} / local
+                demo
+              </span>
+              <h1>
+                {tab === "overview"
+                  ? "A good day starts here."
+                  : tabs.find((item) => item.id === tab)?.name}
+              </h1>
+              <p>
+                {tab === "overview"
+                  ? "The whole camp, without the group-chat scroll."
+                  : "Small updates. One familiar experience across every campsite."}
+              </p>
+            </div>
+            <div
+              className="workspace-role"
+              role="group"
+              aria-label="Preview perspective"
+            >
+              <button
+                aria-pressed={role === "owner"}
+                onClick={() => setRole("owner")}
+              >
+                Owner
+              </button>
+              <button
+                aria-pressed={role === "staff"}
+                onClick={() => {
+                  setRole("staff");
+                  chooseTab("camps");
+                }}
+              >
+                Staff
+              </button>
+            </div>
+          </div>
+          <div className="workspace-context">
+            <label>
+              <IconPin />
+              <span className="sr-only">Working campsite</span>
+              <select
+                value={branch}
+                onChange={(event) => setBranch(event.target.value)}
+              >
+                {branches.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <a href="/" target="_blank" rel="noreferrer">
+              Customer view <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+          {tab === "overview" && (
+            <>
+              <div className="stat-grid">
+                <article>
+                  <span>Camps reviewed today</span>
+                  <b>
+                    {updated}
+                    <small> / 7</small>
+                  </b>
+                  <p>{7 - updated} waiting for a local update</p>
+                </article>
+                <article>
+                  <span>Availability flags</span>
+                  <b>{soldOut.toString().padStart(2, "0")}</b>
+                  <p>Items marked unavailable locally</p>
+                </article>
+                <article>
+                  <span>Photos to review</span>
+                  <b>{pending.length.toString().padStart(2, "0")}</b>
+                  <p>Customer moments in the queue</p>
+                </article>
+                <article>
+                  <span>Crew on duty</span>
+                  <b>
+                    {state.crew
+                      .filter((person) => person.onDuty)
+                      .length.toString()
+                      .padStart(2, "0")}
+                  </b>
+                  <p>Illustrative crew profiles</p>
+                </article>
+              </div>
+              <div className="workspace-two">
+                <section className="app-card">
+                  <div className="app-card__head">
+                    <div>
+                      <span className="eyebrow">Across the campsites</span>
+                      <h2>The daily check-in.</h2>
+                    </div>
+                    <span className="pill">{localDate()} / PH</span>
+                  </div>
+                  <div className="branch-health">
+                    {branches.map((item) => {
+                      const update = state.camps[item.id];
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => {
+                            setBranch(item.id);
+                            chooseTab("camps");
+                          }}
+                        >
+                          <span>
+                            <b>{item.name}</b>
+                            <small>
+                              {update.updated === localDate()
+                                ? `${update.cakes.length} cakes in local update`
+                                : "Cake lineup needs today's review"}
+                            </small>
+                          </span>
+                          <span
+                            className={`workspace-status ${update.updated === localDate() ? "" : "is-warning"}`}
+                          >
+                            {update.updated === localDate()
+                              ? "Updated"
+                              : "Needs review"}
+                          </span>
+                          <IconArrowRight />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+                <div className="workspace-stack">
+                  <section className="workspace-next">
+                    <span className="eyebrow">The next useful thing</span>
+                    <h2>
+                      {pending.length
+                        ? "A good moment needs a second look."
+                        : "Give your camp a fresh little update."}
+                    </h2>
+                    <p>
+                      {pending.length
+                        ? `${pending.length} customer photo(s) are waiting in the shared review queue.`
+                        : "Check the cake case, flag anything sold out, and leave a short note for visitors."}
+                    </p>
+                    <button
+                      className="btn btn--cream"
+                      onClick={() => {
+                        if (pending.length) {
+                          chooseTab("media");
+                          setMedia("review");
+                        } else chooseTab("camps");
+                      }}
+                    >
+                      {pending.length
+                        ? "Review customer photos"
+                        : "Open campsite desk"}
+                      <IconArrowRight />
+                    </button>
+                  </section>
+                  <section className="app-card activity-feed">
+                    <span className="eyebrow">Latest local activity</span>
+                    {state.activity.length ? (
+                      <ol>
+                        {state.activity.slice(0, 5).map((item) => (
+                          <li key={item.id}>
+                            <span>{item.text}</span>
+                            <small>{prettyTime(item.time)}</small>
+                          </li>
+                        ))}
+                      </ol>
+                    ) : (
+                      <div className="app-empty">
+                        <p>
+                          A quiet start. Publish an update or try a Club action
+                          to see the activity here.
+                        </p>
+                      </div>
+                    )}
+                  </section>
+                </div>
+              </div>
+            </>
+          )}
+          {tab === "camps" && (
+            <>
+              <CampEditor key={branch} id={branch} onMessage={setMessage} />
+              <div className="inline-notice">
+                <IconCheck />
+                <p>
+                  Local updates appear in the customer Cake Story and campsite
+                  details. This browser is the entire demo; other devices do not
+                  receive updates.
+                </p>
+              </div>
+            </>
+          )}
+          {tab === "menu" && (
+            <section className="app-card">
+              <div className="app-card__head">
+                <div>
+                  <span className="eyebrow">
+                    One shared menu / branch availability
+                  </span>
+                  <h2>Keep the board honest.</h2>
+                </div>
+                <span className="pill">
+                  {current.soldOut.length} unavailable here
+                </span>
+              </div>
+              <p className="workspace-description">
+                Menu names and prices stay tied to the supplied boards. Toggle
+                availability for {camp.name}; the customer menu shows a local
+                demo label.
+              </p>
+              <label className="app-field">
+                <span>Find an item</span>
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  type="search"
+                  placeholder="Search food or drinks…"
+                />
+              </label>
+              <div className="availability-list">
+                {menuEntries
+                  .filter((entry) =>
+                    (entry.name + entry.category)
+                      .toLowerCase()
+                      .includes(query.toLowerCase()),
+                  )
+                  .map(({ name, category, key }) => {
+                    const unavailable = current.soldOut.includes(key);
+                    return (
+                      <div key={key}>
+                        <span>
+                          {name}
+                          <small className="availability-category">
+                            {category}
+                          </small>
+                        </span>
+                        <button
+                          className={`availability-toggle ${unavailable ? "is-off" : ""}`}
+                          role="switch"
+                          aria-checked={!unavailable}
+                          aria-label={`${name} available at ${camp.short} in demo`}
+                          onClick={() =>
+                            tell(
+                              updateCamp(
+                                branch,
+                                {
+                                  soldOut: unavailable
+                                    ? current.soldOut.filter(
+                                        (item) => item !== key,
+                                      )
+                                    : [...current.soldOut, key],
+                                },
+                                `${name} marked ${unavailable ? "available" : "unavailable"} at ${camp.short} in the demo`,
+                              ),
+                              "Availability updated in this browser.",
+                            )
+                          }
+                        >
+                          <span />
+                          {unavailable ? "Unavailable" : "Available"}
+                        </button>
+                      </div>
+                    );
+                  })}
+                {!menuEntries.some((entry) =>
+                  (entry.name + entry.category)
+                    .toLowerCase()
+                    .includes(query.toLowerCase()),
+                ) && (
+                  <div className="app-empty">
+                    <p>No menu items match that search.</p>
+                    <button className="text-link" onClick={() => setQuery("")}>
+                      Clear search
+                    </button>
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
+          {tab === "media" && (
+            <section className="app-card">
+              <div className="app-card__head">
+                <div>
+                  <span className="eyebrow">A single shared image pool</span>
+                  <h2>More moments. Less searching.</h2>
+                </div>
+                <span className="pill">
+                  {gallery.length +
+                    state.photos.filter((item) => item.approved).length}{" "}
+                  reusable demo assets
+                </span>
+              </div>
+              <p className="workspace-description">
+                Every camp can choose from the same brand library. Customer
+                submissions need approval before appearing in the Club wall. All
+                use here is for the concept preview.
+              </p>
+              <div
+                className="workspace-subtabs"
+                role="group"
+                aria-label="Media library view"
+              >
+                <button
+                  aria-pressed={media === "brand"}
+                  onClick={() => setMedia("brand")}
+                >
+                  Brand library
+                </button>
+                <button
+                  aria-pressed={media === "review"}
+                  onClick={() => setMedia("review")}
+                >
+                  Review queue ({pending.length})
+                </button>
+                <button
+                  aria-pressed={media === "community"}
+                  onClick={() => setMedia("community")}
+                >
+                  Community pool
+                </button>
+              </div>
+              {media === "review" && (
+                <label className="app-field">
+                  <span>Review note · required when returning a photo</span>
+                  <input
+                    value={photoReason}
+                    onChange={(event) => setPhotoReason(event.target.value)}
+                    maxLength={140}
+                    placeholder="Explain why the photo needs to be returned…"
+                  />
+                </label>
+              )}
+              <div className="media-grid">
+                {media === "brand"
+                  ? gallery.map((slug) => {
+                      const entry = imgInfo(slug);
+                      const src =
+                        entry?.srcs["960"] ??
+                        Object.values(entry?.srcs ?? {})[0];
+                      return (
+                        <article className="media-card" key={slug}>
+                          <Img
+                            slug={slug}
+                            alt={slug.replaceAll("-", " ")}
+                            sizes="260px"
+                          />
+                          <div>
+                            <b>{slug.replaceAll("-", " ")}</b>
+                            <small>Black Bear source photo · preview use</small>
+                            <button
+                              className="text-link"
+                              onClick={() => usePhoto(src)}
+                            >
+                              Use at {camp.short}
+                              <IconArrowRight />
+                            </button>
+                            <a href={src} download className="media-download">
+                              Download asset
+                            </a>
+                          </div>
+                        </article>
+                      );
+                    })
+                  : state.photos
+                      .filter((photo) =>
+                        media === "review" ? !photo.approved : photo.approved,
+                      )
+                      .map((photo) => (
+                        <article className="media-card" key={photo.id}>
+                          <img src={photo.src} alt={photo.caption} />
+                          <div>
+                            <b>{photo.caption}</b>
+                            <small>
+                              By {photo.author} ·{" "}
+                              {
+                                branches.find(
+                                  (item) => item.id === photo.branch,
+                                )?.short
+                              }
+                            </small>
+                            {media === "review" ? (
+                              <>
+                                <button
+                                  className="btn btn--small"
+                                  onClick={() =>
+                                    tell(
+                                      changeDemo(
+                                        (current) => ({
+                                          ...current,
+                                          photos: current.photos.map((item) =>
+                                            item.id === photo.id
+                                              ? { ...item, approved: true }
+                                              : item,
+                                          ),
+                                        }),
+                                        `A customer photo by ${photo.author} was approved for the local demo`,
+                                      ),
+                                      "Photo approved. It now appears on the Club wall.",
+                                    )
+                                  }
+                                >
+                                  Approve for local wall
+                                </button>
+                                <button
+                                  className="text-link"
+                                  disabled={!photoReason.trim()}
+                                  onClick={() => {
+                                    const ok = changeDemo(
+                                      (current) => ({
+                                        ...current,
+                                        photos: current.photos.filter(
+                                          (item) => item.id !== photo.id,
+                                        ),
+                                      }),
+                                      `Photo returned: ${photoReason.trim()}`,
+                                    );
+                                    if (ok) setRemoved(photo);
+                                    tell(
+                                      ok,
+                                      "Photo returned locally. Undo is available below.",
+                                    );
+                                  }}
+                                >
+                                  Return photo with note
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  className="text-link"
+                                  onClick={() => usePhoto(photo.src)}
+                                >
+                                  Use at {camp.short}
+                                  <IconArrowRight />
+                                </button>
+                                <button
+                                  className="btn btn--small btn--ghost"
+                                  aria-pressed={photo.winner}
+                                  onClick={() =>
+                                    tell(
+                                      changeDemo(
+                                        (current) => ({
+                                          ...current,
+                                          photos: current.photos.map(
+                                            (item) => ({
+                                              ...item,
+                                              winner:
+                                                item.id === photo.id
+                                                  ? !photo.winner
+                                                  : false,
+                                            }),
+                                          ),
+                                        }),
+                                        "The demo photo spotlight was updated",
+                                      ),
+                                      "Local spotlight updated. No real prize has been issued.",
+                                    )
+                                  }
+                                >
+                                  {photo.winner
+                                    ? "Demo spotlight selected"
+                                    : "Choose demo spotlight"}
+                                </button>
+                                <button
+                                  className="text-link"
+                                  onClick={() =>
+                                    tell(
+                                      changeDemo(
+                                        (current) => ({
+                                          ...current,
+                                          photos: current.photos.map((item) =>
+                                            item.id === photo.id
+                                              ? {
+                                                  ...item,
+                                                  approved: false,
+                                                  winner: false,
+                                                }
+                                              : item,
+                                          ),
+                                        }),
+                                        "A photo was moved back to local review",
+                                      ),
+                                      "Photo moved back to the review queue.",
+                                    )
+                                  }
+                                >
+                                  Move back to review
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </article>
+                      ))}
+              </div>
+              {media !== "brand" &&
+                !state.photos.some((photo) =>
+                  media === "review" ? !photo.approved : photo.approved,
+                ) && (
+                  <div className="app-empty">
+                    <h3>
+                      {media === "review"
+                        ? "Nothing waiting on the crew."
+                        : "The community pool is ready to grow."}
+                    </h3>
+                    <p>Submit a photo in the Club to try this workflow.</p>
+                    <a className="text-link" href="/club#camp-moments">
+                      Share a local photo <IconArrowRight />
+                    </a>
+                  </div>
+                )}
+              {removed && (
+                <div className="undo-bar">
+                  <span>Photo returned with a review note.</span>
+                  <button
+                    onClick={() => {
+                      const ok = changeDemo(
+                        (current) => ({
+                          ...current,
+                          photos: [...current.photos, removed],
+                        }),
+                        "A returned photo was restored",
+                      );
+                      if (ok) setRemoved(null);
+                      tell(ok, "Photo restored to local review.");
+                    }}
+                  >
+                    Undo return
+                  </button>
+                </div>
+              )}
+            </section>
+          )}
+          {tab === "crew" && (
+            <section className="app-card">
+              <div className="app-card__head">
+                <div>
+                  <span className="eyebrow">
+                    Familiar faces / illustrative profiles
+                  </span>
+                  <h2>The people make the camp.</h2>
+                </div>
+                <span className="pill">{state.crew.length} demo profiles</span>
+              </div>
+              <p className="workspace-description">
+                Keep a simple public introduction, a branch, and a duty flag.
+                Scheduling, private staff records, and customer details would
+                require secure accounts in a later phase.
+              </p>
+              <div className="crew-admin-grid">
+                {state.crew.map((person) => (
+                  <article key={person.id}>
+                    <span className="crew-card__avatar" aria-hidden="true">
+                      {person.name.slice(0, 1)}
+                    </span>
+                    <label className="app-field">
+                      <span>Display name</span>
+                      <input
+                        defaultValue={person.name}
+                        maxLength={40}
+                        onBlur={(event) => {
+                          const value = event.target.value.trim();
+                          if (value && value !== person.name)
+                            updateCrew(person.id, { name: value });
+                          else event.target.value = person.name;
+                        }}
+                      />
+                    </label>
+                    <label className="app-field">
+                      <span>Specialty</span>
+                      <input
+                        defaultValue={person.specialty}
+                        maxLength={80}
+                        onBlur={(event) => {
+                          const value = event.target.value.trim();
+                          if (value && value !== person.specialty)
+                            updateCrew(person.id, { specialty: value });
+                          else event.target.value = person.specialty;
+                        }}
+                      />
+                    </label>
+                    <label className="app-field">
+                      <span>Campsite</span>
+                      <select
+                        value={person.branch}
+                        onChange={(event) =>
+                          updateCrew(person.id, { branch: event.target.value })
+                        }
+                      >
+                        {branches.map((item) => (
+                          <option key={item.id} value={item.id}>
+                            {item.short}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <button
+                      className={`availability-toggle ${!person.onDuty ? "is-off" : ""}`}
+                      role="switch"
+                      aria-checked={person.onDuty}
+                      aria-label={`${person.name} on duty in demo`}
+                      onClick={() =>
+                        updateCrew(person.id, { onDuty: !person.onDuty })
+                      }
+                    >
+                      <span />
+                      {person.onDuty ? "On duty in demo" : "Off duty in demo"}
+                    </button>
+                  </article>
+                ))}
+              </div>
+              <form
+                className="crew-add"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  if (!newName.trim() || !newSpecialty.trim()) return;
+                  const ok = changeDemo(
+                    (current) => ({
+                      ...current,
+                      crew: [
+                        ...current.crew,
+                        {
+                          id: crypto.randomUUID(),
+                          name: newName.trim(),
+                          specialty: newSpecialty.trim(),
+                          branch,
+                          onDuty: false,
+                        },
+                      ],
+                    }),
+                    `A demo crew profile was added at ${camp.short}`,
+                  );
+                  if (ok) {
+                    setNewName("");
+                    setNewSpecialty("");
+                  }
+                  tell(
+                    ok,
+                    "Crew profile added locally. Real profiles require staff consent.",
+                  );
+                }}
+              >
+                <h3>Add an illustrative crew profile</h3>
+                <label className="app-field">
+                  <span>Name</span>
+                  <input
+                    value={newName}
+                    onChange={(event) => setNewName(event.target.value)}
+                    required
+                    maxLength={40}
+                    placeholder="Demo display name"
+                  />
+                </label>
+                <label className="app-field">
+                  <span>Specialty</span>
+                  <input
+                    value={newSpecialty}
+                    onChange={(event) => setNewSpecialty(event.target.value)}
+                    required
+                    maxLength={80}
+                    placeholder="What do they love making?"
+                  />
+                </label>
+                <button className="btn" disabled={state.crew.length >= 20}>
+                  Add to {camp.short}
+                </button>
+              </form>
+            </section>
+          )}
+          <div
+            className="workspace-mobile-tabs"
+            role="navigation"
+            aria-label="Quick workspace navigation"
+          >
+            {tabs.map((item) => (
+              <button
+                key={item.id}
+                className={tab === item.id ? "is-active" : ""}
+                onClick={() => chooseTab(item.id)}
+              >
+                {item.short}
+                {item.id === "media" && pending.length > 0 && (
+                  <i>{pending.length}</i>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      </main>
+      <div
+        className={`app-toast ${message ? "is-on" : ""}`}
+        role="status"
+        aria-live="polite"
+      >
+        {message}
+        {message && (
+          <button
+            aria-label="Dismiss notification"
+            onClick={() => setMessage("")}
+          >
+            <IconClose />
+          </button>
+        )}
+      </div>
     </div>
-  </main><div className={`app-toast ${message ? "is-on" : ""}`} role="status" aria-live="polite">{message}{message && <button aria-label="Dismiss notification" onClick={() => setMessage("")}><IconClose /></button>}</div></div>;
+  );
 }
-

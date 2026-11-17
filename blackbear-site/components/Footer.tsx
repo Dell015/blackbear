@@ -1,6 +1,7 @@
 import { brand, branches } from "@/lib/data";
 import { IconFacebook, IconInstagram, IconMail } from "./Icons";
 import { DiamondRow } from "./Doodles";
+import MotionToggle from "./MotionToggle";
 
 export default function Footer() {
   return (
@@ -16,17 +17,42 @@ export default function Footer() {
             <h4>Say hello</h4>
             <ul>
               <li>
-                <a href={`mailto:${brand.email}`} style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
+                <a
+                  href={`mailto:${brand.email}`}
+                  style={{
+                    display: "inline-flex",
+                    gap: 8,
+                    alignItems: "center",
+                  }}
+                >
                   <IconMail width={18} /> {brand.email}
                 </a>
               </li>
               <li>
-                <a href={brand.instagram} target="_blank" rel="noreferrer" style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
+                <a
+                  href={brand.instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: "inline-flex",
+                    gap: 8,
+                    alignItems: "center",
+                  }}
+                >
                   <IconInstagram width={18} /> Instagram {brand.instagramHandle}
                 </a>
               </li>
               <li>
-                <a href={brand.facebook} target="_blank" rel="noreferrer" style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
+                <a
+                  href={brand.facebook}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: "inline-flex",
+                    gap: 8,
+                    alignItems: "center",
+                  }}
+                >
                   <IconFacebook width={18} /> Facebook /BlackBearCoffeeIsabela
                 </a>
               </li>
@@ -38,7 +64,11 @@ export default function Footer() {
               {branches.map((b) => (
                 <li key={b.id}>
                   <span>{b.short}</span>
-                  {b.phone ? <a href={`tel:${b.phone.replace(/\s/g, "")}`}>{b.phone}</a> : <span style={{ opacity: 0.6 }}>to confirm</span>}
+                  {b.phone ? (
+                    <a href={`tel:${b.phone.replace(/\s/g, "")}`}>{b.phone}</a>
+                  ) : (
+                    <span style={{ opacity: 0.6 }}>to confirm</span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -58,9 +88,15 @@ export default function Footer() {
               <li>
                 <a href="#events">Private events</a>
               </li>
-              <li><a href="/club">Bear Scout Club · concept</a></li>
-              <li><a href="/admin">Team &amp; owner workspace</a></li>
-              <li><a href="/pitch">The pitch</a></li>
+              <li>
+                <a href="/club">Bear Scout Club · concept</a>
+              </li>
+              <li>
+                <a href="/admin">Team &amp; owner workspace</a>
+              </li>
+              <li>
+                <a href="/pitch">The pitch</a>
+              </li>
               <li>
                 <a href="#top">Back to top</a>
               </li>
@@ -68,8 +104,14 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer__small">
-          <span>© {brand.est}–2026 Black Bear Kitchen + Coffee · {brand.tagline}</span>
-          <span>Website concept preview. Menu, hours and photos marked &ldquo;to confirm&rdquo; are pending Black Bear&apos;s review.</span>
+          <MotionToggle />
+          <span>
+            © {brand.est}–2026 Black Bear Kitchen + Coffee · {brand.tagline}
+          </span>
+          <span>
+            Website concept preview. Menu, hours and photos marked &ldquo;to
+            confirm&rdquo; are pending Black Bear&apos;s review.
+          </span>
         </div>
       </div>
     </footer>

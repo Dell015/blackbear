@@ -1,6 +1,10 @@
 import type { Branch } from "./data";
 
-export type Status = { kind: "open" | "closed" | "unknown"; label: string; detail?: string };
+export type Status = {
+  kind: "open" | "closed" | "unknown";
+  label: string;
+  detail?: string;
+};
 
 /** Current time in the Philippines, independent of the visitor's device timezone. */
 export function manilaNow(d = new Date()) {
@@ -13,7 +17,10 @@ export function manilaNow(d = new Date()) {
   }).formatToParts(d);
   const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "0";
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  return { day: days.indexOf(get("weekday")), minutes: Number(get("hour")) * 60 + Number(get("minute")) };
+  return {
+    day: days.indexOf(get("weekday")),
+    minutes: Number(get("hour")) * 60 + Number(get("minute")),
+  };
 }
 
 const toMin = (s: string) => {
@@ -58,12 +65,33 @@ export function statusOf(b: Branch, now = manilaNow()): Status {
     const c = toMin(h.close);
     const appliesToday = !h.days || h.days.includes(day);
     const appliesPrev = !h.days || h.days.includes(prevDay);
-    if (appliesToday && minutes >= o && minutes < c) return { kind: "open", label: "Open now", detail: `until ${fmt(h.close)}` };
+    if (appliesToday && minutes >= o && minutes < c)
+      return {
+        kind: "open",
+        label: "Open now",
+        detail: `until ${fmt(h.close)}`,
+      };
     // spill-over past midnight from yesterday's slot
-    if (appliesPrev && c > 1440 && minutes < c - 1440) return { kind: "open", label: "Open now", detail: `until ${fmt(h.close)}` };
+    if (appliesPrev && c > 1440 && minutes < c - 1440)
+      return {
+        kind: "open",
+        label: "Open now",
+        detail: `until ${fmt(h.close)}`,
+      };
   }
   const today = b.hours.find((h) => !h.days || h.days.includes(day));
-  if (today && minutes < toMin(today.open)) return { kind: "closed", label: "Closed", detail: `opens ${fmt(today.open)}` };
-  const tomorrow = b.hours.find((h) => !h.days || h.days.includes((day + 1) % 7));
-  return { kind: "closed", label: "Closed", detail: tomorrow ? `opens ${fmt(tomorrow.open)}` : undefined };
+  if (today && minutes < toMin(today.open))
+    return {
+      kind: "closed",
+      label: "Closed",
+      detail: `opens ${fmt(today.open)}`,
+    };
+  const tomorrow = b.hours.find(
+    (h) => !h.days || h.days.includes((day + 1) % 7),
+  );
+  return {
+    kind: "closed",
+    label: "Closed",
+    detail: tomorrow ? `opens ${fmt(tomorrow.open)}` : undefined,
+  };
 }

@@ -19,7 +19,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
   openGraph: {
     title: "Black Bear Kitchen + Coffee",
-    description: "Bear hugs & bold brews. Find your nearest campsite, see today's cakes, browse the full menu.",
+    description:
+      "Bear hugs & bold brews. Find your nearest campsite, see today's cakes, browse the full menu.",
     images: [{ url: "/og.jpg", width: 1200, height: 630 }],
     type: "website",
   },
@@ -28,7 +29,11 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#CD6128" };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -36,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "document.documentElement.classList.add('js');if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('rm');",
+              "(()=>{const r=document.documentElement;r.classList.add('js');try{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches||localStorage.getItem('bb-reduced-motion')==='1')r.classList.add('rm')}catch{}setTimeout(()=>{if(!window.__bbReady)r.classList.remove('js')},4000)})()",
           }}
         />
       </head>

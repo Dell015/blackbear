@@ -1,8 +1,25 @@
+"use client";
 import Img from "./Img";
 import { signatures } from "@/lib/data";
-import { BearLine, CurlyArrow, Heart, Ring, Sparkle, Squiggle, Star, Stamp, Sun } from "./Doodles";
+import {
+  BearLine,
+  CurlyArrow,
+  Heart,
+  Ring,
+  Sparkle,
+  Squiggle,
+  Star,
+  Stamp,
+  Sun,
+} from "./Doodles";
 
-const D = { heart: Heart, sparkle: Sparkle, sun: Sun, star: Star, squiggle: Squiggle } as const;
+const D = {
+  heart: Heart,
+  sparkle: Sparkle,
+  sun: Sun,
+  star: Star,
+  squiggle: Squiggle,
+} as const;
 
 /** "Your daily dose of good fuel": their post style, with doodles that pen themselves in. */
 export default function Fuel() {
@@ -27,11 +44,23 @@ export default function Fuel() {
               <article className="fuel__card" key={s.name}>
                 <div style={{ position: "relative" }}>
                   <Ring seed={i} />
-                  <div className="fuel__photo" data-reveal data-delay={String((i % 3) * 0.08)}>
-                    <Img slug={s.image} alt={s.name} sizes="(min-width: 900px) 30vw, 50vw" />
+                  <div
+                    className="fuel__photo"
+                    data-reveal
+                    data-delay={String((i % 3) * 0.08)}
+                  >
+                    <Img
+                      slug={s.image}
+                      alt={s.name}
+                      sizes="(min-width: 900px) 30vw, 50vw"
+                    />
                   </div>
                   <Doodle className="fuel__doodle" />
-                  <Stamp value={`₱${s.price}`} size={i < 2 ? 92 : 74} className="fuel__stamp" />
+                  <Stamp
+                    value={`₱${s.price}`}
+                    size={i < 2 ? 92 : 74}
+                    className="fuel__stamp"
+                  />
                 </div>
                 <div className="fuel__label">
                   <CurlyArrow className="fuel__arrow" flip={i % 2 === 1} />
@@ -40,6 +69,19 @@ export default function Fuel() {
                     <small>{s.note}</small>
                   </div>
                 </div>
+                <a
+                  className="fuel__browse"
+                  href={`/menu?search=${encodeURIComponent(s.name)}`}
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("bb:menu", {
+                        detail: { mode: "food", query: s.name },
+                      }),
+                    )
+                  }
+                >
+                  Find on the menu <span aria-hidden="true">↗</span>
+                </a>
               </article>
             );
           })}
