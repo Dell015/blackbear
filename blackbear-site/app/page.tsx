@@ -2,7 +2,6 @@ import Motion from "@/components/Motion";
 import Preloader from "@/components/Preloader";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import Ticker from "@/components/Ticker";
 import Story from "@/components/Story";
 import Fuel from "@/components/Fuel";
 import Menu from "@/components/Menu";
@@ -23,7 +22,6 @@ export default function Page() {
       <Header />
       <main id="main" tabIndex={-1}>
         <Hero />
-        <Ticker />
         <VisitGuide />
         <Story />
         <Fuel />

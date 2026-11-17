@@ -16,7 +16,7 @@ const dateLabel = new Date(cakeStoryDate + "T00:00:00+08:00").toLocaleDateString
 export default function Cakes() {
   const demo = useDemo();
   const withStory = branches;
-  const [sel, setSel] = useState(withStory[0].id);
+  const [sel, setSel] = useState("cauayan-d1");
   useEffect(() => {
     const sync = () => { try { const saved = localStorage.getItem("bb-fav-camp"); if (saved && branches.some((branch) => branch.id === saved)) setSel(saved); } catch {} };
     sync(); window.addEventListener("bb:favorite",sync);

@@ -11,6 +11,7 @@ export type DemoState = {
   stamps: number;
   rewardHistory: string[];
   favoriteCrew: string | null;
+  savedPicks: string[];
   crew: CrewProfile[];
   photos: CampPhoto[];
   activity: { id: string; text: string; time: string }[];
@@ -21,6 +22,7 @@ export const demoInitial: DemoState = {
   stamps: 0,
   rewardHistory: [],
   favoriteCrew: null,
+  savedPicks: [],
   crew: [
     { id: "crew-1", name: "Alex · demo profile", branch: "cauayan-d1", specialty: "Coffee & latte art", onDuty: true },
     { id: "crew-2", name: "Sam · demo profile", branch: "santiago", specialty: "Matcha & late-night brews", onDuty: false },
