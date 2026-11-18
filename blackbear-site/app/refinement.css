@@ -40,13 +40,13 @@ a,button { text-underline-offset:5px; }
 .camp-hero__copy { position:relative; z-index:3; padding-top:60px; pointer-events:none; }
 .camp-hero__copy > * { pointer-events:auto; }
 .camp-hero__copy .eyebrow { font-size:10px; letter-spacing:.1em; }
-.camp-hero h1 { font-size:clamp(64px,7.2vw,104px); line-height:1; letter-spacing:-.06em; margin:24px 0 6px; font-variation-settings:"wdth" 122; max-width:none; white-space:nowrap; }
+.camp-hero h1 { font-size:clamp(64px,6vw,86px); line-height:1; letter-spacing:-.06em; margin:24px 0 6px; font-variation-settings:"wdth" 122; max-width:none; white-space:nowrap; }
 .camp-hero__copy > .script { font-size:clamp(29px,3.5vw,48px); color:var(--cream); line-height:1.2; margin:0 0 26px; }
 .camp-hero__intro { font-size:17px; line-height:1.6; margin:0 0 26px; }
 .camp-hero .btn { font-size:10px; min-height:46px; padding:12px 22px; }
 .camp-scene { position:absolute; inset:0; z-index:1; }
 .camp-scene__hills { position:absolute; bottom:0; left:0; width:100%; height:58%; }
-.camp-scene__landscape { position:absolute; width:min(68vw,1020px); max-width:none; right:-2%; bottom:0; height:auto; mask-image:linear-gradient(to right,transparent,black 9%); }
+.camp-scene__landscape { position:absolute; width:min(55vw,1020px); max-width:none; right:-2%; bottom:0; height:auto; mask-image:linear-gradient(to right,transparent,black 9%); }
 .camp-scene__story { position:absolute; right:27%; bottom:13%; width:200px; height:200px; }
 .camp-scene__bear { width:100%; height:100%; transform:translateX(0); }
 .camp-scene__sprite { width:100%; height:100%; background:url('/img/bernie-walk-v2.webp') 100% 50% / 300% 100% no-repeat; }
@@ -314,9 +314,9 @@ a,button { text-underline-offset:5px; }
 @media (min-width:900px) and (max-width:1199px) and (orientation:landscape) {
   .camp-hero { min-height:550px; height:calc(100svh - var(--header-h)); }
   .camp-hero__copy { padding-top:38px; }
-  .camp-hero h1 { font-size:78px; }
+  .camp-hero h1 { font-size:clamp(54px,6vw,68px); }
   .camp-hero__intro { font-size:15px; }
-  .camp-scene__landscape { width:65vw; right:-8%; }
+  .camp-scene__landscape { width:55vw; right:-4%; }
   .camp-scene__story { width:160px; height:160px; right:24%; bottom:15%; }
   .catalog__layout { grid-template-columns:180px minmax(0,1fr); gap:28px; }
   .catalog-board__items { grid-template-columns:1fr; }
@@ -348,7 +348,7 @@ a,button { text-underline-offset:5px; }
   .camp-hero { min-height:660px; height:calc(100svh - 108px); max-height:780px; }
   .camp-hero__copy { padding-top:32px; }
   .camp-hero__copy .eyebrow { font-size:8px; letter-spacing:.04em; }
-  .camp-hero h1 { font-size:clamp(46px,13.3vw,84px); max-width:none; letter-spacing:-.06em; margin:23px 0 6px; }
+  .camp-hero h1 { font-size:clamp(35px,11.5vw,72px); max-width:none; letter-spacing:-.06em; margin:23px 0 6px; }
   .camp-hero__copy > .script { font-size:30px; margin-bottom:18px; }
   .camp-hero__intro { font-size:14px; line-height:1.6; margin-bottom:20px; }
   .camp-hero .btn { min-height:44px; padding:11px 18px; font-size:9px; }
@@ -458,10 +458,10 @@ a,button { text-underline-offset:5px; }
   :root { --header-h:52px; }
   .camp-hero { min-height:440px; height:auto; }
   .camp-hero__copy { padding-top:30px; }
-  .camp-hero h1 { font-size:61px; margin-top:14px; max-width:9ch; }
+  .camp-hero h1 { font-size:clamp(44px,6.2vw,55px); margin-top:14px; max-width:none; }
   .camp-hero__copy > .script { font-size:29px; margin-bottom:15px; }
   .camp-hero__intro { font-size:13px; margin-bottom:18px; }
-  .camp-scene__landscape { width:62vw; right:-7%; bottom:15px; }
+  .camp-scene__landscape { width:55vw; right:-4%; bottom:15px; }
   .camp-scene__story { width:130px; height:130px; right:23%; bottom:16%; }
   .camp-scene__hills { height:45%; }
   .camp-hero__caption { min-height:45px; }
@@ -475,7 +475,7 @@ a,button { text-underline-offset:5px; }
   :root { --pad:16px; }
   .camp-hero { min-height:635px; }
   .camp-hero__copy > .script { font-size:27px; }
-  .camp-hero h1 { font-size:44px; }
+  .camp-hero h1 { font-size:11.5vw; }
   .home-menu h2,.home-camp h2,.home-community h2 { font-size:30px; }
   .home-product > img { height:180px; }
   .catalog-board { padding-inline:14px; }
