@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { brand, cakes, drinks, food, foodAddOns, drinkAddOns, readyToDrink, cakeStoryDate, type Tag } from "@/lib/data";
-import { useDemo } from "@/lib/demo-store";
+import { prettyDate, useDemo } from "@/lib/demo-store";
 import { useCamp } from "@/lib/camp-selection";
 import { menuDetails, menuKey } from "@/lib/menu-details";
 import { useDialog } from "@/lib/useDialog";
@@ -59,7 +59,7 @@ export default function MenuCatalog() {
           {visible.map(s=><article className={`catalog-board ${s.mode==="cakes"?"catalog-board--cakes":""}`} key={s.id}>
             <header className="catalog-board__head"><div><span className="eyebrow">Black Bear / {labels[s.mode]}</span><h3>{s.title}</h3>{s.script&&<p className="script">{s.script}</p>}</div>{s.id==="coffee"&&<div className="catalog-board__coffee ink-highlight"><Img slug="coffee-cappuccino" alt="Black Bear cappuccino" sizes="150px"/><svg className="ink-sweep" viewBox="0 0 160 160" aria-hidden="true"><path pathLength="1" d="M18 92C6 32 143 18 145 82C159 135 27 152 18 92M131 23l10-13m0 29 14-3"/></svg></div>}</header>
             {s.mode==="drinks"&&s.items[0]?.prices.length>1&&<div className="catalog-board__sizes"><span>Black Bear <b>hot</b></span><span>Grizzly <b>16oz iced</b></span><span>Polar <b>22oz iced</b></span></div>}
-            {s.mode==="cakes"&&<p className="catalog-board__note">A different selection at every campsite. <b>Sample case · {state.camps[camp].updated??cakeStoryDate}.</b> Call ahead for today’s slices and prices.</p>}
+            {s.mode==="cakes"&&<p className="catalog-board__note">A different selection at every campsite. <b>Cake case · {prettyDate(state.camps[camp].updated??cakeStoryDate)}.</b> Call ahead for today’s slices and prices.</p>}
             <div className="catalog-board__items">{s.items.map(i=>{
               const detail=menuDetails[i.name],cake=cakes.find(c=>c.name===i.name),image=detail?.image??cake?.image;
               const prices=i.prices.filter((p):p is number=>p!==null), unavailable=state.camps[camp].soldOut.includes(menuKey(i.category,i.name));

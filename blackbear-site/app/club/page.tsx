@@ -79,7 +79,7 @@ export default function ClubPage() {
   return (
     <div className="club-page">
       <Header />
-      <main id="app-main" className="app-main" tabIndex={-1}>
+      <main id="main" className="app-main" tabIndex={-1}>
         <section className="club-hero wrap">
           <div>
             <span className="eyebrow">
@@ -522,7 +522,7 @@ export default function ClubPage() {
                 <small>
                   Saved only on this device. Never uploaded.{" "}
                   {pending.length > 0 &&
-                    `${pending.length} photo(s) awaiting local review.`}
+                    `${pending.length} ${pending.length === 1 ? "photo" : "photos"} awaiting local review.`}
                 </small>
               </form>
             </div>

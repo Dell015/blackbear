@@ -8021,3 +8021,49 @@ html.rm .steam path {
 .hub-hero__inner > * { min-width:0; }
 @media(max-width:640px) { .hub-hero__inner { grid-template-columns:minmax(0,1fr); } }
 .hub-hero__art img { animation:none; opacity:1; transform:none; }
+
+/* ------------------------------ QA pass 2026-11-18 ---------------------- */
+/* switch instead of a text glyph */
+.motion-toggle__switch {
+  width: 26px;
+  height: 14px;
+  border-radius: 999px;
+  border: 1.5px solid currentColor;
+  position: relative;
+  flex: none;
+  display: inline-block;
+}
+.motion-toggle__switch::after {
+  content: "";
+  position: absolute;
+  top: 1.5px;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  transition: transform 0.3s var(--ease);
+}
+.motion-toggle__switch.is-on::after {
+  transform: translateX(11px);
+}
+/* comfortable tap targets (44px) */
+.logo {
+  min-height: 44px;
+  justify-content: center;
+}
+.camp-hero__caption a,
+.menu-original,
+.motion-toggle {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.prototype-strip .motion-toggle,
+.public-footer .motion-toggle,
+.club-utilities .motion-toggle {
+  min-height: 44px;
+}
+.prototype-strip .motion-toggle {
+  font-size: 11px;
+}

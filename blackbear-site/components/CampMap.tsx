@@ -14,8 +14,10 @@ export default function CampMap({selected,onSelect,overview=0}:{selected:string;
   useEffect(()=>{
     let disposed=false,instance:LibreMap|null=null;let resize:ResizeObserver|undefined;
     setFailed(false);setReady(false);
-    import("maplibre-gl").then(({Map,Marker,NavigationControl,AttributionControl})=>{
+    import("maplibre-gl").then(({Map,Marker,NavigationControl,AttributionControl,setWorkerUrl})=>{
       if(disposed||!container.current)return;
+      // Load the worker from /public (see scripts/copy-maplibre-worker.mjs); the bundled path fails under Turbopack.
+      setWorkerUrl(`${window.location.origin}/maplibre/maplibre-gl-worker.mjs`);
       try {
         instance=new Map({container:container.current,style:"/maps/blackbear.json",center:campLocations[selectedRef.current].center,zoom:12.2,attributionControl:false,cooperativeGestures:true,dragRotate:false,pitchWithRotate:false,maxZoom:18,minZoom:7});
         map.current=instance;
@@ -44,7 +46,7 @@ export default function CampMap({selected,onSelect,overview=0}:{selected:string;
   return <div className="camp-map">
     <div ref={container} className="camp-map__canvas" aria-label={`Street map near ${branch.name}. Area preview; use Directions for the business location.`}/>
     {!ready&&!failed&&<div className="camp-map__loading"><span className="map-loader"/><span>Finding the trail…</span></div>}
-    {failed&&<div className="camp-map__fallback"><p>{ready?"Some map details couldn’t load.":"The map couldn’t load here."}</p><button onClick={()=>setRetry(n=>n+1)}>Try again</button><a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(branch.mapQuery)}`} target="_blank" rel="noreferrer">Open Maps <IconDirections/></a></div>}
-    <div className="camp-map__label"><span className="camp-map__dot"/>{branch.name}<small>Area preview · exact shop pin to verify</small></div>
+    {failed&&<div className="camp-map__fallback"><p>{ready?"Some map details couldn’t load.":"The map couldn’t load here."}</p><button onClick={()=>setRetry(n=>n+1)}>Try again</button><a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(branch.mapQuery)}${campLocations[branch.id]?.placeId?`&query_place_id=${campLocations[branch.id].placeId}`:""}`} target="_blank" rel="noreferrer">Open Maps <IconDirections/></a></div>}
+    <div className="camp-map__label"><span className="camp-map__dot"/>{branch.name}<small>Tap Directions for the route</small></div>
   </div>;
 }

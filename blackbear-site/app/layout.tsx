@@ -15,7 +15,10 @@ const SITE = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
-  title: "Black Bear Kitchen + Coffee | Campsites across Isabela & Cagayan",
+  title: {
+    default: "Black Bear Kitchen + Coffee | Campsites across Isabela & Cagayan",
+    template: "%s · Black Bear Kitchen + Coffee",
+  },
   description:
     "Bear hugs & bold brews since 2020. Brunch, coffee, matcha, protein drinks and cakes at seven Black Bear campsites: Cauayan, Santiago (open 24/7), Alicia, Ilagan, Roxas and Tuguegarao.",
   // Prototype: keep out of search engines until Black Bear approves it.

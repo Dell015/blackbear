@@ -8,15 +8,16 @@ export const campExperiences: Record<string,{special:string;specialImage:string;
   roxas:{special:"Your afternoon slice",specialImage:"cake-dark-chocolate",specialDescription:"Dark Chocolate Cake, ready for a coffee pairing feature.",menuSearch:"Dark Chocolate",event:"Roxas, through your lens",eventImage:"coffee-iced-latte-outdoor",eventDescription:"A small photo walk and a catch-up over coffee afterwards.",when:"Saturday · 4–5 PM"},
   alicia:{special:"A proper lunch break",specialImage:"food-crispy-huntsman-chop",specialDescription:"Crispy Huntsman Chops as the camp’s kitchen spotlight.",menuSearch:"Crispy Huntsman",event:"Friends at the long table",eventImage:"staff-kitchen-team-02",eventDescription:"A board game afternoon. Bring your people or meet a few new ones.",when:"Sunday · 3–5 PM"},
 };
-/** Area centers only. Exact shop pins must be verified with the owner. */
-export const campLocations: Record<string,{center:[number,number];source:string}> = {
-  tuguegarao:{center:[121.7535,17.6503],source:"https://ungegn.un.org/dashboard/cities/details?id=3176"},
-  ilagan:{center:[121.8894,17.1489],source:"https://cityofilagan.gov.ph/index.php/facts/"},
-  roxas:{center:[121.62,17.12],source:"https://en.wikipedia.org/wiki/Roxas,_Isabela"},
-  "cauayan-d1":{center:[121.7686,16.9325],source:"https://www.philatlas.com/luzon/r02/isabela/cauayan/district-i.html"},
-  "cauayan-sf":{center:[121.7609,16.9363],source:"https://www.philatlas.com/luzon/r02/isabela/cauayan/san-fermin.html"},
-  alicia:{center:[121.6972,16.7787],source:"https://en.wikipedia.org/wiki/Alicia,_Isabela"},
-  santiago:{center:[121.5446,16.6875],source:"https://www.philatlas.com/luzon/r02/isabela/santiago.html"},
+/** Exact shop pins from each campsite's Google Maps listing (checked 2026-11-18). */
+const G = "https://www.google.com/maps/place/?q=place_id:";
+export const campLocations: Record<string,{center:[number,number];placeId:string;source:string}> = {
+  tuguegarao:{center:[121.7334214,17.6263682],placeId:"ChIJpawUeASFhTMRvbK9SPRM1C0",source:G+"ChIJpawUeASFhTMRvbK9SPRM1C0"},
+  ilagan:{center:[121.8651226,17.1133916],placeId:"ChIJJ3DtB7pDhTMR2r5JMTEOS9w",source:G+"ChIJJ3DtB7pDhTMR2r5JMTEOS9w"},
+  roxas:{center:[121.6152723,17.1237629],placeId:"ChIJ0Z8ZBF31jzMRXn-MkiVV5tU",source:G+"ChIJ0Z8ZBF31jzMRXn-MkiVV5tU"},
+  "cauayan-d1":{center:[121.7622928,16.9199946],placeId:"ChIJYa9ew6JRhTMRRal74KuTQKc",source:G+"ChIJYa9ew6JRhTMRRal74KuTQKc"},
+  "cauayan-sf":{center:[121.7671623,16.937078],placeId:"ChIJlfLgZABRhTMRqzMpRm2YV0k",source:G+"ChIJlfLgZABRhTMRqzMpRm2YV0k"},
+  alicia:{center:[121.6961745,16.7814313],placeId:"ChIJFWDegsCrmjMRbPUSYMyExBU",source:G+"ChIJFWDegsCrmjMRbPUSYMyExBU"},
+  santiago:{center:[121.5638414,16.6968156],placeId:"ChIJ1Um8PyQHkDMR7RxFHlnjYIQ",source:G+"ChIJ1Um8PyQHkDMR7RxFHlnjYIQ"},
 };
 export function distanceKm(a:[number,number],b:[number,number]) {
   const rad=Math.PI/180,dLat=(b[1]-a[1])*rad,dLon=(b[0]-a[0])*rad;

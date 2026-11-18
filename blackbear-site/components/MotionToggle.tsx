@@ -14,7 +14,7 @@ export default function MotionToggle() {
         : preference === "reduced"
           ? "Reduced motion: on"
           : "Reduce motion"}
-      <span aria-hidden="true">{preference === "full" ? "◯" : "●"}</span>
+      <span className={`motion-toggle__switch${preference === "full" ? "" : " is-on"}`} aria-hidden="true" />
     </button>
   );
 }

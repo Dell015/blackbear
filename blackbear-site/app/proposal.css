@@ -300,3 +300,4 @@
   .proposal-faq details { break-inside:avoid; }
   .proposal-faq details > p { display:block!important; font-size:10pt; }
 }
+.proposal-brand { min-height:44px; }

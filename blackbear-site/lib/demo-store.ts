@@ -87,6 +87,42 @@ export const demoInitial: DemoState = {
   photos: [],
   activity: [],
 };
+/** First visit: a lived-in demo (dates relative to today) so the owner sees the
+ * workspace in action. Seed ids start with "seed-". Visitors' own changes replace it. */
+function seededState(): DemoState {
+  const today = localDate();
+  const ago = (h: number) => new Date(Date.now() - h * 3600_000).toISOString();
+  return {
+    ...demoInitial,
+    camps: {
+      ...demoInitial.camps,
+      "cauayan-d1": { ...demoInitial.camps["cauayan-d1"], updated: today, note: "Fresh Biscoff Cheesecake just came out of the chiller." },
+      santiago: {
+        ...demoInitial.camps.santiago,
+        updated: today,
+        soldOut: ["Matcha Series::Matcha Ube"],
+        note: "Open all night. Matcha Ube is back tomorrow morning.",
+      },
+    },
+    photos: [
+      {
+        id: "seed-photo-1",
+        src: "/img/coffee-iced-latte-outdoor-480.webp",
+        caption: "Iced latte on a sunny Saturday",
+        author: "Demo guest",
+        branch: "cauayan-d1",
+        approved: false,
+        winner: false,
+        created: ago(2),
+      },
+    ],
+    activity: [
+      { id: "seed-act-1", text: "Santiago City marked Matcha Ube unavailable for today", time: ago(1) },
+      { id: "seed-act-3", text: "A customer photo is waiting for review", time: ago(2) },
+      { id: "seed-act-2", text: "Cauayan District 1 reviewed today's cake lineup", time: ago(3) },
+    ],
+  };
+}
 const key = "bb-workspace-v1";
 let cached = demoInitial;
 let lastRaw: string | null | undefined;
@@ -96,7 +132,11 @@ function snapshot(): DemoState {
     const raw = localStorage.getItem(key);
     if (raw !== lastRaw) {
       lastRaw = raw;
-      const value = raw ? JSON.parse(raw) : null;
+      if (!raw) {
+        cached = seededState();
+        return cached;
+      }
+      const value = JSON.parse(raw);
       cached =
         value?.version === 1 &&
         value.camps &&
@@ -175,6 +215,12 @@ export function localDate(date = new Date()) {
   }).format(date);
 }
 export const sampleCakeDate = cakeStoryDate;
+/** "2026-11-17" -> "November 17, 2026" (Philippine calendar date, no timezone drift). */
+export function prettyDate(ymd: string, month: "long" | "short" = "long") {
+  const [y, m, d] = ymd.split("-").map(Number);
+  if (!y || !m || !d) return ymd;
+  return new Intl.DateTimeFormat("en-PH", { year: "numeric", month, day: "numeric", timeZone: "UTC" }).format(new Date(Date.UTC(y, m - 1, d)));
+}
 export function prettyTime(value: string) {
   return new Intl.DateTimeFormat("en-PH", {
     timeZone: "Asia/Manila",

@@ -1,4 +1,5 @@
 "use client";
+import { campLocations } from "@/lib/camp-experiences";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   branches,
@@ -233,7 +234,7 @@ function Sheet({
   const share = async () => {
     if (!x) return;
     const text = `Black Bear ${x.name}: ${x.address}${x.phone ? ` · ${x.phone}` : ""}`;
-    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(x.mapQuery)}`;
+    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(x.mapQuery)}${campLocations[x.id]?.placeId?`&query_place_id=${campLocations[x.id].placeId}`:""}`;
     try {
       if (navigator.share)
         await navigator.share({ title: `Black Bear ${x.name}`, text, url });
@@ -338,7 +339,7 @@ function Sheet({
               <div className="sheet__actions">
                 <a
                   className="act"
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(x.mapQuery)}`}
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(x.mapQuery)}${campLocations[x.id]?.placeId?`&query_place_id=${campLocations[x.id].placeId}`:""}`}
                   target="_blank"
                   rel="noreferrer"
                   tabIndex={open ? 0 : -1}

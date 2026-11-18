@@ -9,7 +9,7 @@ export const menuDetails: Record<
   "Loco Moco": {
     image: "food-loco-moco",
     description:
-      "A comforting rice plate with a patty, egg, and gravy, pictured in Black Bear’s own post. Marked a fan favorite on the menu.",
+      "A comforting rice plate with a patty, egg, and gravy. A fan favorite from the lunch and dinner board.",
   },
   "Crispy Huntsman Chops": {
     image: "food-crispy-huntsman-chop",
@@ -24,7 +24,7 @@ export const menuDetails: Record<
   "Cabin Clubhouse Sandwich": {
     image: "food-cabin-clubhouse-sandwich",
     description:
-      "The kitchen’s stacked clubhouse sandwich, pictured in its own product post. A fan favorite for a sandwich kind of day.",
+      "The kitchen’s stacked clubhouse sandwich. A fan favorite for a sandwich kind of day.",
   },
   "Mama Bear's Spaghetti": {
     image: "food-mama-bears-baked-spaghetti",
@@ -44,7 +44,7 @@ export const menuDetails: Record<
   "Caramel Macchiato": {
     image: "coffee-caramel-macchiato",
     description:
-      "A caramel coffee-bar pick, pictured in Black Bear’s own product post. Choose your cup size below.",
+      "A caramel coffee-bar pick. Choose your cup size below.",
   },
   Latte: {
     image: "coffee-iced-latte-outdoor",
@@ -54,12 +54,12 @@ export const menuDetails: Record<
   "Spanish Latte": {
     image: "coffee-spanish-latte-ube-latte",
     description:
-      "A Spanish latte from Black Bear’s coffee selection. The supplied photo shows the Spanish and ube lattes together.",
+      "A Spanish latte from the Black Bear coffee bar, shown here with an ube latte.",
   },
   "Matcha Latte": {
     image: "matcha-series-lineup",
     description:
-      "The classic matcha pick on the board, available hot or iced. This photo shows the full Matcha Series.",
+      "The classic matcha pick on the board, available hot or iced. Shown with the full Matcha Series.",
   },
   "Dirty Matcha": {
     image: "matcha-dirty",
@@ -74,7 +74,7 @@ export const menuDetails: Record<
   "Matcha Strawberry": {
     image: "matcha-strawberry",
     description:
-      "A strawberry variation from the Matcha Series, pictured in its own Black Bear post. Available in two iced sizes.",
+      "A strawberry take on the Matcha Series. Available in two iced sizes.",
   },
   "Matcha Ube": {
     image: "matcha-ube",
@@ -99,7 +99,7 @@ export const menuDetails: Record<
   "Matcha Protein Latte": {
     image: "protein-matcha-latte",
     description:
-      "Matcha from the Protein Series, pictured in its own Black Bear product post. See the board’s price below.",
+      "Matcha from the Protein Series, with 23g of protein. See the price below.",
   },
   "Vanilla Protein Cold Brew": {
     image: "protein-vanilla-cold-brew",
@@ -109,7 +109,7 @@ export const menuDetails: Record<
   "Strawberry Dragon Fruit": {
     image: "refresher-strawberry-dragon-fruit",
     description:
-      "A fruit refresher from the iced drinks board, with strawberry and dragon fruit in its name and product post.",
+      "A bright strawberry and dragon fruit refresher from the iced drinks board.",
   },
   "Tropical Guava": {
     image: "refresher-tropical-guava",

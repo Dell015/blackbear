@@ -13,6 +13,7 @@ import { branches, cakes, food, drinks, gallery } from "@/lib/data";
 import {
   changeDemo,
   localDate,
+  prettyDate,
   prettyTime,
   updateCamp,
   useDemo,
@@ -356,7 +357,7 @@ export default function AdminPage() {
                       <span className="eyebrow">Across the campsites</span>
                       <h2>The daily check-in.</h2>
                     </div>
-                    <span className="pill">{localDate()} / PH</span>
+                    <span className="pill">{prettyDate(localDate(), "short")}</span>
                   </div>
                   <div className="branch-health">
                     {branches.map((item) => {
@@ -400,7 +401,7 @@ export default function AdminPage() {
                     </h2>
                     <p>
                       {pending.length
-                        ? `${pending.length} customer photo(s) are waiting in the shared review queue.`
+                        ? `${pending.length} customer ${pending.length === 1 ? "photo is" : "photos are"} waiting in the shared review queue.`
                         : "Check the cake case, flag anything sold out, and leave a short note for visitors."}
                     </p>
                     <button
