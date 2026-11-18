@@ -13,17 +13,16 @@ import LogoMotion from "./LogoMotion";
 
 const links = [
   { href: "/menu", label: "Menu" },
-  { href: "/cakes", label: "Cakes" },
   { href: "/campsites", label: "Campsites" },
   { href: "/club", label: "The club" },
   { href: "/pitch", label: "The pitch ↗" },
 ];
 const drawerLinks = [
-  ...links.slice(0, 4),
+  ...links.slice(0, 3),
   { href: "/story", label: "Our story" },
   { href: "/events", label: "Gatherings" },
   { href: "/gallery", label: "Life at camp" },
-  links[4],
+  links[3],
 ];
 
 export default function Header() {
@@ -76,7 +75,7 @@ export default function Header() {
             ))}
           </nav>
           <a href="/campsites" className="btn btn--small header__cta">
-            <IconPin /> Find a campsite
+            <IconPin /> Visit a camp
           </a>
           <button
             className="burger"

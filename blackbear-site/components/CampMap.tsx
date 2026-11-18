@@ -23,6 +23,7 @@ export default function CampMap({selected,onSelect,overview=0}:{selected:string;
         instance.addControl(new AttributionControl({compact:true}),"bottom-right");
         branches.forEach((b,i)=>{
           const pin=document.createElement("button");pin.className="camp-map-pin";pin.type="button";pin.textContent=String(i+1).padStart(2,"0");pin.setAttribute("aria-label",`${b.name} area preview`);pin.dataset.camp=b.id;
+          pin.title=b.name;
           pin.addEventListener("click",()=>selectRef.current(b.id));
           markers.current.push(new Marker({element:pin,anchor:"center"}).setLngLat(campLocations[b.id].center).addTo(instance!));
         });
@@ -38,7 +39,7 @@ export default function CampMap({selected,onSelect,overview=0}:{selected:string;
     map.current.flyTo({center:campLocations[selected].center,zoom:12.8,duration:preference==="full"?1100:0});
     markers.current.forEach(m=>{const e=m.getElement();e.classList.toggle("is-selected",e.dataset.camp===selected);e.setAttribute("aria-pressed",String(e.dataset.camp===selected));});
   },[selected,ready,preference]);
-  useEffect(()=>{if(overview&&map.current)map.current.fitBounds([[121.43,16.61],[121.97,17.72]],{padding:48,duration:preference==="full"?1000:0});},[overview,preference]);
+  useEffect(()=>{if(overview&&ready&&map.current)map.current.fitBounds([[121.43,16.61],[121.97,17.72]],{padding:48,duration:preference==="full"?1000:0});},[overview,ready,preference]);
   const branch=branches.find(b=>b.id===selected)!;
   return <div className="camp-map">
     <div ref={container} className="camp-map__canvas" aria-label={`Street map near ${branch.name}. Area preview; use Directions for the business location.`}/>

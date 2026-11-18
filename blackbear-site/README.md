@@ -1,82 +1,81 @@
-# Black Bear Kitchen + Coffee — connected frontend concept
+# Black Bear Kitchen + Coffee
 
-A client-pitch prototype built with Next.js App Router, React, local Fontsource fonts, GSAP, responsive WebP images, and one handwritten stylesheet.
+A local, frontend-only concept for Black Bear. Built with Next.js 16, React, TypeScript, GSAP, MapLibre, local fonts, and responsive WebP images.
 
 ## Start
 
-```sh
-npm install
-npm run dev
-```
+Run npm install, then npm run dev. Use npm run dev -- --port 3001 when another project occupies port 3000. The current Black Bear preview uses http://localhost:3001.
 
-The default preview is http://localhost:3000. The mobile bar always offers Home, Menu, Camps, and Call. For a production check:
+Run npm run build for the production build and TypeScript validation. npm start serves that build.
 
-```sh
-npx tsc --noEmit
-npm run build
-npm start
-```
-
-## One shortcut hub, focused pages
+## Customer experience
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Compact shortcut hub with eight destinations and a saved campsite |
-| `/menu` | One menu category at a time, kitchen favorites, search, quick views, sizes, and saved picks |
-| `/cakes` | Cake Story by campsite |
-| `/campsites` | Searchable campsite list, optional trail map, details and calls |
-| `/story` | The brand and its people |
-| `/events` | Conference-room and private-gathering information |
-| `/gallery` | A paginated gallery and links to the social feed |
-| `/club` | Separate Passport, Crew, and Moments tabs for the proposed customer club |
-| `/admin` | Owner overview and staff workspace: branch cakes and notes, menu availability, shared media, photo moderation, crew profiles |
-| `/pitch` | Audience walkthrough, working feature demos, connected workflow, animated logo showcase, production roadmap, printable pitch |
+| / | Illustrated camp welcome, short menu preview, campsite selection, Club and gatherings previews |
+| /menu | Coffee first; a plain category index on desktop and a category drawer on phones; search across drinks, food and cakes; photo quick views, listed sizes, and saved picks |
+| /campsites | Real themed street map, automatic map movement when selecting a branch, nearest-area lookup, directions, calls, and branch-specific example specials/events |
+| /cakes | Redirects to the cakes category inside the menu |
+| /club | Demo loyalty passport, crew preferences, and community moments |
+| /story | Black Bear's story and people |
+| /events | Private-gathering information and conference-room contact |
+| /gallery | Paginated brand gallery and social links |
+| /admin | Owner overview, branch updates, specials/events examples, cake cases, item availability, shared media and crew profiles |
+| /pitch | Audience walkthrough, live frontend feature links, connected workflow, motion showcase and production roadmap |
 
 ## Demo walkthrough
 
-1. On the customer site, browse menu categories, open a dish, choose a listed size, and save a pick.
-2. In Workspace → Camps, choose a campsite, change its cake lineup, write a note, and publish locally.
-3. Return to the public Cake Story or campsite detail to see that update.
-4. In Workspace → Menu, flag an item unavailable. Choose that campsite in the customer menu to see its demo availability label.
-5. In the Club, simulate visits and try the proposed reward redemption after six stamps.
-6. Submit a JPG, PNG, or WebP photo in the Club. In Workspace → Media → Review queue, approve it. It appears on the Club wall and can be reused in a branch update.
-7. Edit an illustrative crew profile or its duty status; see the result in the Club for that campsite.
-8. Open Pitch to explain these workflows and the next phase.
+1. Open the menu. Coffee appears first. Open an item, inspect the supplied sizes/prices, and save a pick. Search also finds food and cakes.
+2. Choose a campsite with the searchable branch picker. The selection carries between customer pages on this device.
+3. On Campsites, change branches to move the real map and see a different example special/event. The optional location button selects the closest area center; no location request happens automatically.
+4. In Workspace -> Campsite desk, update the note, cake selection, special and event examples. Publish locally. The public campsite page and menu reflect those changes in the same browser.
+5. In Workspace -> Menu, flag food, drinks or cakes unavailable. The customer menu identifies the local demo flag for that camp.
+6. In the Club, simulate visits, try the proposed reward, and submit a local photo. Approve it in Workspace -> Media, then reuse it in a branch update.
+7. Edit the illustrative crew profiles and duty flags; the Club reflects them.
+8. Use Pitch to show the value for guests, regulars, employees and the owner.
 
-## Local data and boundaries
+## Map accuracy and services
 
-`lib/demo-store.ts` connects the frontend views through localStorage. Updates persist in this browser and synchronize between same-origin tabs. Different hosts or ports have separate data. This is not a shared server, secure admin, ordering system, real loyalty program, or active photo contest.
+The street map is real and can be panned and zoomed. It uses MapLibre GL JS and OpenFreeMap / OpenMapTiles / OpenStreetMap, with the original provider attribution retained. The local style at public/maps/blackbear.json uses Black Bear's cream, sage, tan and forest colors.
 
-- Workspace state: `bb-workspace-v1`
-- Favorite campsite: `bb-fav-camp`
-- Motion preference: `bb-reduced-motion`
-- Intro session flag: `bb-intro`
+The seven pins are explicitly labeled AREA PREVIEWS. They use sourced town or district centers, not verified shop coordinates. Directions opens the supplied branch business query in Google Maps. Nearest-area distances are straight-line estimates to those centers, not route distances or a guarantee of the nearest storefront. Verify every shop pin with the owner before launch. Sources are recorded beside coordinates in lib/camp-experiences.ts.
 
-Photos are resized in the browser, stored locally, and never uploaded. The demo allows up to 12 photo submissions, 8 MB per selected source file, and 20 illustrative crew profiles. Browser storage quotas still apply; failed saves show a message. No private records or credentials should be entered.
+The map needs an internet connection and WebGL. If loading fails, a retry and external Maps link remain available. The map library loads only on the campsite route. No API key or backend is required for this prototype.
 
-## Sources and presentation
+## Data and content boundaries
 
-`lib/data.ts` remains unchanged: menu names, source prices, tags, cup sizes, branch facts, and the dated Cake Story stay tied to the supplied assets. Only confirmed hours are described as open/closed. The QR menu reference is https://blackbearcoffee.my.canva.site/big-stores.
+lib/data.ts remains the supplied source of menu names, prices, tags, sizes, cake samples and branch facts. No cake prices were invented. Only confirmed hours are described as open/closed. The original QR reference is https://blackbearcoffee.my.canva.site/big-stores.
 
-`lib/menu-details.ts` adds brief editorial browsing guides and exact photo mappings where supplied. Missing item photos are stated honestly; no replacement food photos are invented. Descriptions are not ingredient/allergen specifications.
+Branch specials and events are illustrative examples, labeled on the customer page. Their photos come from the supplied brand library and do not prove an actual event or offer at that branch. lib/camp-experiences.ts owns these examples. The workspace can edit the example text locally.
 
-The logo animation uses the existing badge artwork with an entrance, outer-ring draw, sparkle, and hover nod. No logo was redrawn. Motion can be reduced from the footer or app view strip and respects the operating-system setting. Scrolling uses native browser behavior; GSAP handles reveal, doodle, and parallax effects.
+Brief menu descriptions are browsing guides, not ingredient or allergen specifications. Exact supplied item photos are used where available; absent photos are stated honestly.
 
-Robots remain `noindex, nofollow`. Photos and artwork are concept-preview material pending the owner's usage approval. The rewards policy, photo spotlight, and crew profiles are illustrative. See the Pitch roadmap before a real launch.
+Workspace, Club, availability, photos and preferences use browser localStorage. They persist on this origin and can synchronize across tabs, but do not sync to another device or the business. No real order, booking, voucher, upload, staff authentication or active contest is created. The owner and staff views demonstrate the intended product.
 
-## Maintenance
+Storage keys: bb-workspace-v1, bb-fav-camp, bb-reduced-motion and the session flag bb-intro. Photo limits remain 12 submissions, 8 MB per selected source file, and 20 illustrative crew profiles. Photos are resized and stored locally.
 
-- Content: `lib/data.ts`
-- Photo/description map and item identity: `lib/menu-details.ts`
-- Local workflow state: `lib/demo-store.ts`
-- Accessibility focus trap: `lib/useDialog.ts`
-- Motion setting: `lib/motion-preference.ts`
-- Styles: `app/globals.css` (new refinement sections are appended)
-- Production type checking is enabled.
-- On Windows, `scripts/build.mjs` loads a build-only compatibility helper that serializes generated `.next` directory creation and briefly retries transient filesystem errors. Dependencies and production runtime behavior are unchanged. Recheck this helper when upgrading Next.js.
+## Artwork, motion and responsive layouts
 
-No Git commit, push, deployment, or external message was performed.
+The original badge is preserved and animated. The new camp landscape and three-pose bear layer are generated adaptations of the supplied engraved illustration, saved as project assets. The short sequence shows Bernie following a firefly and sitting to watch it; it plays once and has an optional replay button.
 
+Brief cream outlines draw over selected food/coffee imagery and disappear. Page navigation uses progressive cross-document View Transitions where supported. Menu category changes, product sheets, the branch picker, map camera, buttons and selected scroll moments use restrained motion. System reduced motion and the site's Motion control are respected. Scrolling remains native.
 
+Phone layouts use a compact header, a slim safe-area-aware bottom tab bar, stacked previews, category sheets and a map above branch details. Tablet portrait uses wider stacked map/details and a narrow contents index. Tablet landscape and desktop use split compositions and persistent side navigation. These rules are in app/refinement.css, loaded after the legacy base styles.
 
+## Verification and maintenance
 
+Production build and TypeScript passed. All nine active routes returned HTTP 200, the legacy cakes route returned the intended 307 redirect, and referenced route scripts/styles/images returned HTTP 200. The map style passed the MapLibre style validator; a live vector tile request returned HTTP 200. Browser automation was unavailable for this revision, so actual device rendering, touch gestures, geolocation prompts, focus behavior and visual animation timing still need a browser pass. Do not present these as device-tested.
+
+Main files: components/HomeEditorial.tsx, CampScene.tsx, MenuCatalog.tsx, CampExplorer.tsx, CampMap.tsx and CampPicker.tsx; lib/camp-selection.ts and camp-experiences.ts; app/refinement.css. Existing local workflow state is in lib/demo-store.ts. Focus containment is in lib/useDialog.ts.
+
+The Windows build wrapper remains in scripts/build.mjs and windows-build-compat.cjs. It addresses transient recursive directory creation errors only during a build. Production runtime and installed dependencies are not patched.
+
+Robots remain noindex, nofollow. No Git commit, push or deployment was performed.
+
+## Technique references
+
+- OpenFreeMap setup and style customization: https://openfreemap.org/quick_start/
+- MapLibre animated camera and reduced-motion behavior: https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/
+- GSAP drawn strokes: https://www.gsap.com/docs/v3/Plugins/DrawSVGPlugin/
+- Native cross-document transitions: https://webkit.org/blog/16967/two-lines-of-cross-document-view-transitions-code-you-can-use-on-every-website-today/
+- Progressive View Transitions: https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API/Using

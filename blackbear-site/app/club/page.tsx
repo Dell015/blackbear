@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Header from "@/components/Header";
 import MobileBar from "@/components/MobileBar";
 import MotionToggle from "@/components/MotionToggle";
+import CampPicker from "@/components/CampPicker";
 import Img from "@/components/Img";
 import {
   IconArrowRight,
@@ -169,21 +170,7 @@ export default function ClubPage() {
                   little passport.
                 </h2>
               </div>
-              <label className="app-field app-field--compact">
-                <span>
-                  <IconPin /> Your campsite
-                </span>
-                <select
-                  value={camp}
-                  onChange={(event) => saveCamp(event.target.value)}
-                >
-                  {branches.map((branch) => (
-                    <option key={branch.id} value={branch.id}>
-                      {branch.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <CampPicker value={camp} onChange={saveCamp}/>
             </div>
             <div className="passport-grid">
               <div className="passport">

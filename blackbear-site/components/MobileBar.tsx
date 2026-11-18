@@ -1,12 +1,14 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
-import { branches } from "@/lib/data";
+import { branches, brand } from "@/lib/data";
 import { useDialog } from "@/lib/useDialog";
 import { IconClose, IconMenu, IconPhone, IconPin } from "./Icons";
 
 /** Sticky action bar on phones: Menu, Campsites, Call (picks a branch). */
 export default function MobileBar() {
   const on = true;
+  const [active, setActive] = useState("");
+  useEffect(() => setActive(window.location.pathname), []);
   const [sheet, setSheet] = useState(false);
   const close = useCallback(() => setSheet(false), []);
   const dialog = useDialog<HTMLElement>(sheet, close);
@@ -19,7 +21,7 @@ export default function MobileBar() {
         inert={!on}
         aria-hidden={!on}
       >
-        <a href="/" aria-label="Home shortcuts">
+        <a href="/" aria-label="Home" aria-current={active === "/" ? "page" : undefined}>
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -31,10 +33,10 @@ export default function MobileBar() {
           </svg>
           Home
         </a>
-        <a href="/menu">
+        <a href="/menu" aria-current={active === "/menu" ? "page" : undefined}>
           <IconMenu /> Menu
         </a>
-        <a href="/campsites">
+        <a href="/campsites" aria-current={active === "/campsites" ? "page" : undefined}>
           <IconPin /> Camps
         </a>
         <button onClick={() => setSheet(true)} aria-haspopup="dialog">
@@ -86,7 +88,7 @@ export default function MobileBar() {
                     <IconPhone /> Call
                   </a>
                 ) : (
-                  <span className="pill pill--line">soon</span>
+                  <a className="text-link" href={brand.facebook} target="_blank" rel="noreferrer">Message the crew ↗</a>
                 )}
               </div>
             ))}

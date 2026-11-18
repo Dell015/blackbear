@@ -84,7 +84,7 @@ const features = [
   {
     number: "02",
     name: "A menu people can use",
-    text: "Source-based prices, food and drink search, useful tags, and local branch availability flags.",
+    text: "A coffee-first menu with a plain category index, search across drinks, kitchen and cakes, quick photo views, saved picks, and branch availability notes.",
     href: "/menu",
     label: "Browse the menu",
   },
@@ -98,7 +98,7 @@ const features = [
   {
     number: "04",
     name: "A campsite publishing desk",
-    text: "Choose a branch, update its cakes and note, then see the result on the customer side in this browser.",
+    text: "Choose a branch, update its cake case, special, event and crew note, then see the result on the customer side in this browser.",
     href: "/admin?tab=camps",
     label: "Publish a demo update",
   },
@@ -115,6 +115,13 @@ const features = [
     text: "Choose existing brand assets, review a local customer submission, and reuse an approved image at a campsite.",
     href: "/admin?tab=media",
     label: "Open the media pool",
+  },
+  {
+    number: "07",
+    name: "A map that feels like Black Bear",
+    text: "Explore real streets on a cream-and-forest map. Selecting a campsite moves to its area. An optional location button finds the closest area, with direct links to business directions. Shop pins still need owner verification.",
+    href: "/campsites",
+    label: "Explore the campsites",
   },
 ];
 
@@ -375,17 +382,18 @@ export default function PitchPage() {
                 <span className="script">A little more life.</span>
               </h2>
               <p className="lead">
-                The supplied bear badge, camp illustration, orange and forest
-                palette, and bold typography stay at the heart of the
-                experience. Motion adds a warm welcome and useful feedback.
+                The supplied bear badge, engraved illustration style, orange
+                and forest palette, and bold typography stay at the heart of
+                the experience. A layered camp scene gives Bernie a small story:
+                he follows a firefly, then sits to watch it.
               </p>
               <ul className="pitch-checks">
                 <li>
                   <IconCheck /> A short logo entrance and a quiet hover response
                 </li>
                 <li>
-                  <IconCheck /> Scroll reveals, drawn doodles, and tactile
-                  controls
+                  <IconCheck /> Brief food outlines, soft page transitions,
+                  scroll reveals, and responsive controls
                 </li>
                 <li>
                   <IconCheck /> Reduced-motion support and keyboard navigation
@@ -416,8 +424,9 @@ export default function PitchPage() {
               <h3>Make the idea tangible.</h3>
               <ul>
                 <li>Responsive branded customer website</li>
-                <li>Menu search, tags, and campsite finder</li>
-                <li>Local cake, note, and availability publishing</li>
+                <li>Coffee-first menu with integrated cakes and quick views</li>
+                <li>Themed street map and campsite-specific examples</li>
+                <li>Local cake, special, event, and availability publishing</li>
                 <li>Demo loyalty passport and crew preferences</li>
                 <li>Local photo submission and approval flow</li>
                 <li>Owner overview and shared media library</li>

@@ -40,16 +40,16 @@ export default function MenuCatalog() {
   const search = normal(query.trim());
   const visible = sections.filter(s=>search||filter==="saved"?true:s.mode===mode&&(category==="all"||s.id===category)).map(s=>({...s,items:s.items.filter(i=>(!search||normal(`${i.name} ${i.category}`).includes(search))&&(filter==="all"||filter==="saved"?filter!=="saved"||state.savedPicks.includes(menuKey(i.category,i.name)):i.tags?.includes(filter as Tag)))})).filter(s=>s.items.length);
   const count = visible.reduce((n,s)=>n+s.items.length,0), active = sections.find(s=>s.id===category);
-  const navigation = <>
+  const navigation = (scope: string) => <>
     <div className="menu-index__heading"><span className="eyebrow">Browse the menu</span></div>
     {(["drinks","food","cakes"] as Mode[]).map(m=><div className="menu-index__group" key={m}><h3>{labels[m]}</h3>{sections.filter(s=>s.mode===m).map((s,i)=><button key={s.id} onClick={()=>choose(s.id,m)} aria-current={category===s.id&&mode===m&&!query?"true":undefined}><span><small>{String(i+1).padStart(2,"0")}</small>{s.title}</span><span>{s.items.length}</span></button>)}</div>)}
-    <details className="menu-refinement"><summary>Find a particular pick <span aria-hidden="true">+</span></summary><fieldset><legend className="sr-only">Refine menu</legend>{filterOptions.map(f=><label key={f.value}><input type="radio" name={browse?"drawer-filter":"menu-filter"} value={f.value} checked={filter===f.value} onChange={()=>{setFilter(f.value);setCategory("all");setBrowse(false);}}/>{f.label}{f.value==="saved"&&` (${state.savedPicks.length})`}</label>)}</fieldset></details>
+    <details className="menu-refinement"><summary>Find a particular pick <span aria-hidden="true">+</span></summary><fieldset><legend className="sr-only">Refine menu</legend>{filterOptions.map(f=><label key={f.value}><input type="radio" name={`${scope}-filter`} value={f.value} checked={filter===f.value} onChange={()=>{setFilter(f.value);setCategory("all");setBrowse(false);}}/>{f.label}{f.value==="saved"&&` (${state.savedPicks.length})`}</label>)}</fieldset></details>
     <a className="menu-original" href="https://blackbearcoffee.my.canva.site/big-stores" target="_blank" rel="noreferrer">Original QR menu <IconArrowRight/></a>
   </>;
   return <section className="catalog" id="menu">
     <div className="wrap catalog__intro"><div><span className="eyebrow">Coffee first. Stay for the rest.</span><h2>The menu<span>.</span></h2></div><CampPicker value={camp} onChange={setCamp}/></div>
     <div className="wrap catalog__layout">
-      <aside className="menu-index" aria-label="Menu categories">{navigation}</aside>
+      <aside className="menu-index" aria-label="Menu categories">{navigation("sidebar")}</aside>
       <div className="catalog__content">
         <div className="catalog__tools"><div className="catalog__tabs" role="group" aria-label="Menu section">{(["drinks","food","cakes"] as Mode[]).map(m=><button key={m} aria-pressed={mode===m&&!query} onClick={()=>choose(defaults[m],m)}>{labels[m]}</button>)}</div>
           <div className="catalog__search-row"><button className="catalog__browse" onClick={()=>setBrowse(true)} aria-haspopup="dialog" aria-expanded={browse}><IconMenu/><span>{query?"All categories":active?.title??"Browse categories"}</span><span aria-hidden="true">⌄</span></button><label className="catalog__search"><IconSearch/><input type="search" placeholder="Search the whole menu" aria-label="Search food, drinks and cakes" value={query} onChange={e=>setQuery(e.target.value)}/></label></div>
@@ -75,7 +75,7 @@ export default function MenuCatalog() {
       </div>
     </div>
     <div className={`sheet-backdrop ${browse?"is-open":""}`} onClick={()=>setBrowse(false)} aria-hidden="true"/>
-    <aside ref={dialog} className={`sheet category-drawer ${browse?"is-open":""}`} role="dialog" aria-modal="true" aria-label="Browse menu categories" aria-hidden={!browse} inert={!browse} tabIndex={-1}><button className="sheet__close" onClick={()=>setBrowse(false)} aria-label="Close categories"><IconClose/></button><div className="sheet__handle"/><div className="sheet__body">{navigation}</div></aside>
+    <aside ref={dialog} className={`sheet category-drawer ${browse?"is-open":""}`} role="dialog" aria-modal="true" aria-label="Browse menu categories" aria-hidden={!browse} inert={!browse} tabIndex={-1}><button className="sheet__close" onClick={()=>setBrowse(false)} aria-label="Close categories"><IconClose/></button><div className="sheet__handle"/><div className="sheet__body">{navigation("drawer")}</div></aside>
     <ItemSheet item={selected} camp={camp} onClose={()=>setSelected(null)}/>
   </section>;
 }

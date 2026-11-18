@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import AppNav from "@/components/AppNav";
+import CampPicker from "@/components/CampPicker";
 import Img, { imgInfo } from "@/components/Img";
 import {
   IconArrowRight,
@@ -20,6 +21,7 @@ import {
   type CrewProfile,
 } from "@/lib/demo-store";
 import { menuKey } from "@/lib/menu-details";
+import { campExperiences } from "@/lib/camp-experiences";
 
 type Tab = "overview" | "camps" | "menu" | "media" | "crew";
 const tabs: { id: Tab; name: string; short: string }[] = [
@@ -30,6 +32,7 @@ const tabs: { id: Tab; name: string; short: string }[] = [
   { id: "crew", name: "The crew", short: "Crew" },
 ];
 const menuEntries = [
+  ...cakes.map(c => ({name:c.name,category:"Cakes",key:menuKey("Cakes",c.name)})),
   ...food.flatMap((section) =>
     section.items.map((item) => ({
       name: item.name,
@@ -110,6 +113,15 @@ function CampEditor({
           crew cannot confirm.
         </small>
       </label>
+      <details className="workspace-local-fields">
+        <summary>Camp special & event examples</summary>
+        <p>These stay labeled as examples on the public campsite page. Publish to preview your edits on this device.</p>
+        <label className="app-field"><span>Special title</span><input maxLength={70} value={draft.specialTitle ?? ""} placeholder={campExperiences[id].special} onChange={e => patch({specialTitle:e.target.value})}/></label>
+        <label className="app-field"><span>Special description</span><textarea rows={2} maxLength={180} value={draft.specialDescription ?? ""} placeholder={campExperiences[id].specialDescription} onChange={e => patch({specialDescription:e.target.value})}/></label>
+        <label className="app-field"><span>Event title</span><input maxLength={70} value={draft.eventTitle ?? ""} placeholder={campExperiences[id].event} onChange={e => patch({eventTitle:e.target.value})}/></label>
+        <label className="app-field"><span>Event description</span><textarea rows={2} maxLength={180} value={draft.eventDescription ?? ""} placeholder={campExperiences[id].eventDescription} onChange={e => patch({eventDescription:e.target.value})}/></label>
+        <label className="app-field"><span>Sample schedule</span><input maxLength={80} value={draft.eventWhen ?? ""} placeholder={campExperiences[id].when} onChange={e => patch({eventWhen:e.target.value})}/></label>
+      </details>
       <fieldset className="cake-editor">
         <legend>Cakes in the case</legend>
         <p>
@@ -297,20 +309,7 @@ export default function AdminPage() {
             </div>
           </div>
           <div className="workspace-context">
-            <label>
-              <IconPin />
-              <span className="sr-only">Working campsite</span>
-              <select
-                value={branch}
-                onChange={(event) => setBranch(event.target.value)}
-              >
-                {branches.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <CampPicker value={branch} onChange={setBranch} label="Working campsite"/>
             <a href="/" target="_blank" rel="noreferrer">
               Customer view <span aria-hidden="true">↗</span>
             </a>
@@ -446,7 +445,7 @@ export default function AdminPage() {
               <div className="inline-notice">
                 <IconCheck />
                 <p>
-                  Local updates appear in the customer Cake Story and campsite
+                  Local updates appear in the customer menu and campsite
                   details. This browser is the entire demo; other devices do not
                   receive updates.
                 </p>

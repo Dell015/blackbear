@@ -35,7 +35,7 @@ export default function Motion() {
         gsap.to(el, {
           opacity: 1,
           y: 0,
-          duration: 1.1,
+          duration: 0.7,
           delay: Number(el.dataset.delay || 0),
           ease: "expo.out",
           scrollTrigger: { trigger: el, start: "top 88%", once: true },
@@ -44,12 +44,12 @@ export default function Motion() {
 
       gsap.utils.toArray<HTMLElement>("[data-stagger]").forEach((el) => {
         const kids = Array.from(el.children) as HTMLElement[];
-        gsap.set(kids, { opacity: 0, y: 36 });
+        gsap.set(kids, { opacity: 0, y: 24 });
         gsap.to(kids, {
           opacity: 1,
           y: 0,
-          duration: 1,
-          stagger: 0.08,
+          duration: 0.65,
+          stagger: 0.06,
           ease: "expo.out",
           scrollTrigger: { trigger: el, start: "top 86%", once: true },
         });
@@ -108,6 +108,16 @@ export default function Motion() {
       });
     });
 
+    const inkTimers: ReturnType<typeof setTimeout>[] = [];
+    const ink = new IntersectionObserver(entries => {
+      for (const entry of entries) if (entry.isIntersecting) {
+        entry.target.classList.add("is-ink-visible");
+        inkTimers.push(setTimeout(() => entry.target.classList.remove("is-ink-visible"), 1500));
+        ink.unobserve(entry.target);
+      }
+    }, { threshold: 0.55 });
+    document.querySelectorAll(".ink-highlight").forEach(el => ink.observe(el));
+
     // Native scrolling keeps filters, focus, and browser restoration predictable.
     const onClick = (e: MouseEvent) => {
       if (
@@ -163,6 +173,9 @@ export default function Motion() {
       window.removeEventListener("load", refresh);
       cancelAnimationFrame(refreshFrame);
       resize.disconnect();
+      ink.disconnect();
+      inkTimers.forEach(clearTimeout);
+      document.querySelectorAll(".is-ink-visible").forEach(el => el.classList.remove("is-ink-visible"));
       ctx.revert();
     };
   }, [motionPreference]);
