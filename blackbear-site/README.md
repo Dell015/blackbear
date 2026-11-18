@@ -21,7 +21,7 @@ Run npm run build for the production build and TypeScript validation. npm start 
 | /events | Private-gathering information and conference-room contact |
 | /gallery | Paginated brand gallery and social links |
 | /admin | Owner overview, branch updates, specials/events examples, cake cases, item availability, shared media and crew profiles |
-| /pitch | Audience walkthrough, live frontend feature links, connected workflow, motion showcase and production roadmap |
+| /pitch | Five concise chapters, four audience perspectives, shareable presentation positions, live local branch preview, actual motion demos, and an all-audience print overview |
 
 ## Demo walkthrough
 
@@ -56,7 +56,7 @@ Storage keys: bb-workspace-v1, bb-fav-camp, bb-reduced-motion and the session fl
 
 ## Artwork, motion and responsive layouts
 
-The original badge is preserved and animated. The new camp landscape and three-pose bear layer are generated adaptations of the supplied engraved illustration, saved as project assets. The short sequence shows Bernie following a firefly and sitting to watch it; it plays once and has an optional replay button.
+The original badge is preserved and animated. The transparent camp props and three-pose bear layer are generated adaptations of the supplied engraved illustration, saved as project assets. One SVG coordinate system places the trees, tent, furniture and bear on code-drawn hills. There is no rectangular ground image or gradient mask to hide an edge. Bernie has a clear walking path beside the picnic area. The short sequence shows him following a firefly and sitting to watch it; it plays once and has an optional replay button.
 
 Brief cream outlines draw over selected food/coffee imagery and disappear. Page navigation uses progressive cross-document View Transitions where supported. Menu category changes, product sheets, the branch picker, map camera, buttons and selected scroll moments use restrained motion. System reduced motion and the site's Motion control are respected. Scrolling remains native.
 
@@ -64,9 +64,9 @@ Phone layouts use a compact header, a slim safe-area-aware bottom tab bar, stack
 
 ## Verification and maintenance
 
-Production build and TypeScript passed. All nine active routes returned HTTP 200, the legacy cakes route returned the intended 307 redirect, and referenced route scripts/styles/images returned HTTP 200. The map style passed the MapLibre style validator; a live vector tile request returned HTTP 200. Browser automation was unavailable for this revision, so actual device rendering, touch gestures, geolocation prompts, focus behavior and visual animation timing still need a browser pass. Do not present these as device-tested.
+Production build and TypeScript passed. All nine active routes returned HTTP 200, the legacy cakes route returned the intended 307 redirect, and referenced route scripts/styles/images returned HTTP 200. The map style passed the MapLibre style validator; a live vector tile request returned HTTP 200. The Pitch revision passed 21 local DOM, computed-style and font-metric integration checks, including actual workspace publishing, menu quick views, availability and the Club reward simulation. Native browser inspection was blocked because the computer-use tool could not verify the current browser URL. Actual device rendering, touch gestures, geolocation prompts, focus geometry, visual animation timing and print pagination remain unverified. Do not present these as device-tested.
 
-Main files: components/HomeEditorial.tsx, CampScene.tsx, MenuCatalog.tsx, CampExplorer.tsx, CampMap.tsx and CampPicker.tsx; lib/camp-selection.ts and camp-experiences.ts; app/refinement.css. Existing local workflow state is in lib/demo-store.ts. Focus containment is in lib/useDialog.ts.
+Main files: components/HomeEditorial.tsx, CampScene.tsx, MenuCatalog.tsx, CampExplorer.tsx, CampMap.tsx, CampPicker.tsx and PitchPresentation.tsx; lib/camp-selection.ts, camp-experiences.ts and pitch.ts; app/refinement.css and proposal.css. Existing local workflow state is in lib/demo-store.ts. Focus containment is in lib/useDialog.ts. Temporary integration-test tooling is kept in the chat workspace under work/, outside the shipped project dependencies.
 
 The Windows build wrapper remains in scripts/build.mjs and windows-build-compat.cjs. It addresses transient recursive directory creation errors only during a build. Production runtime and installed dependencies are not patched.
 
