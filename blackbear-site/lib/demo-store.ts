@@ -9,6 +9,11 @@ export type CampUpdate = {
   note: string;
   hoursDraft: string;
   featuredPhoto?: string;
+  specialTitle?: string;
+  specialDescription?: string;
+  eventTitle?: string;
+  eventDescription?: string;
+  eventWhen?: string;
 };
 export type CampPhoto = {
   id: string;

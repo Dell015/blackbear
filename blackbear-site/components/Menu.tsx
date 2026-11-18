@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   brand,
   branches,
+  cakes,
   drinkAddOns,
   drinks,
   food,
@@ -33,7 +34,7 @@ import { DiamondRow } from "./Doodles";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 type Mode = "food" | "drinks";
-type Pick = {
+export type Pick = {
   name: string;
   prices: (number | null)[];
   sizes: string[];
@@ -92,7 +93,7 @@ const drinkSections: Section[] = [
   },
 ];
 
-function ItemSheet({
+export function ItemSheet({
   item: currentItem,
   camp,
   onClose,
@@ -115,7 +116,8 @@ function ItemSheet({
     setSize(item?.prices.findIndex((price) => price !== null) ?? 0);
     setMessage("");
   }, [item?.name]);
-  const detail = item ? menuDetails[item.name] : null;
+  const cake = item ? cakes.find(c => c.name === item.name) : null;
+  const detail = item ? menuDetails[item.name] ?? (cake ? { image: cake.image, description: "A slice from Black Bear’s cake case. Selections vary by campsite. Ask the crew for today’s slice price and ingredient details." } : null) : null;
   const branch = branches.find((entry) => entry.id === camp)!;
   const itemKey = item ? menuKey(item.category, item.name) : "";
   const saved = !!item && state.savedPicks.includes(itemKey);
@@ -227,6 +229,7 @@ function ItemSheet({
                   ),
                 )}
               </div>
+              {cake && <p className="menu-detail__note">Slice prices are not listed in the supplied menu. Call the crew for today’s price.</p>}
               <div className="menu-detail__availability">
                 <IconPin />
                 <span>

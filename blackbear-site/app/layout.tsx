@@ -7,6 +7,8 @@ import "@fontsource/yellowtail/400.css";
 import "@fontsource/caveat/500.css";
 import "@fontsource/caveat/700.css";
 import "./globals.css";
+import "maplibre-gl/dist/maplibre-gl.css";
+import "./refinement.css";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 

@@ -1,5 +1,5 @@
 import PublicShell from "@/components/PublicShell";
-import HomeHub from "@/components/HomeHub";
+import HomeHub from "@/components/HomeEditorial";
 export default function Page() {
   return (
     <PublicShell home>

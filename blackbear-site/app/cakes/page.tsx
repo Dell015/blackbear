@@ -1,9 +1,4 @@
-import PublicShell from "@/components/PublicShell";
-import Cakes from "@/components/Cakes";
+import { redirect } from "next/navigation";
 export default function CakesPage() {
-  return (
-    <PublicShell title="Black Bear Cake Story">
-      <Cakes />
-    </PublicShell>
-  );
+  redirect("/menu?type=cakes&category=cakes");
 }
