@@ -9,6 +9,7 @@ import "@fontsource/caveat/700.css";
 import "./globals.css";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./refinement.css";
+import "./proposal.css";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 

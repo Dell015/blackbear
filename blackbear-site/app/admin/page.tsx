@@ -186,12 +186,15 @@ export default function AdminPage() {
   const [newName, setNewName] = useState("");
   const [newSpecialty, setNewSpecialty] = useState("");
   useEffect(() => {
-    const selected = new URLSearchParams(window.location.search).get("tab");
+    const params = new URLSearchParams(window.location.search);
+    const selected = params.get("tab");
     if (tabs.some((item) => item.id === selected)) setTab(selected as Tab);
+    const selectedCamp = params.get("camp");
+    if (selectedCamp && branches.some(item => item.id === selectedCamp)) setBranch(selectedCamp);
   }, []);
-  const chooseTab = (next: Tab) => {
+  const chooseTab = (next: Tab, campId = branch) => {
     setTab(next);
-    history.replaceState(null, "", `/admin?tab=${next}`);
+    history.replaceState(null, "", `/admin?tab=${next}&camp=${campId}`);
     setQuery("");
   };
   const camp = branches.find((item) => item.id === branch)!;
@@ -309,7 +312,7 @@ export default function AdminPage() {
             </div>
           </div>
           <div className="workspace-context">
-            <CampPicker value={branch} onChange={setBranch} label="Working campsite"/>
+            <CampPicker value={branch} onChange={id => { setBranch(id); history.replaceState(null,"",`/admin?tab=${tab}&camp=${id}`); }} label="Working campsite"/>
             <a href="/" target="_blank" rel="noreferrer">
               Customer view <span aria-hidden="true">↗</span>
             </a>
@@ -363,7 +366,7 @@ export default function AdminPage() {
                           key={item.id}
                           onClick={() => {
                             setBranch(item.id);
-                            chooseTab("camps");
+                            chooseTab("camps", item.id);
                           }}
                         >
                           <span>

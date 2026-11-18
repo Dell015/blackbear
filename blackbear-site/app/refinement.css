@@ -44,19 +44,17 @@ a,button { text-underline-offset:5px; }
 .camp-hero__copy > .script { font-size:clamp(29px,3.5vw,48px); color:var(--cream); line-height:1.2; margin:0 0 26px; }
 .camp-hero__intro { font-size:17px; line-height:1.6; margin:0 0 26px; }
 .camp-hero .btn { font-size:10px; min-height:46px; padding:12px 22px; }
-.camp-scene { position:absolute; inset:0; z-index:1; }
-.camp-scene__hills { position:absolute; bottom:0; left:0; width:100%; height:58%; }
-.camp-scene__landscape { position:absolute; width:min(55vw,1020px); max-width:none; right:-2%; bottom:0; height:auto; mask-image:linear-gradient(to right,transparent,black 9%); }
-.camp-scene__story { position:absolute; right:27%; bottom:13%; width:200px; height:200px; }
-.camp-scene__bear { width:100%; height:100%; transform:translateX(0); }
-.camp-scene__sprite { width:100%; height:100%; background:url('/img/bernie-walk-v2.webp') 100% 50% / 300% 100% no-repeat; }
+.camp-scene { position:absolute; inset:0; z-index:1; background:linear-gradient(to top,var(--forest) 0,var(--forest) 80px,transparent 80px); }
+.camp-scene__world { display:block; position:absolute; bottom:0; left:0; width:100%; height:auto; max-width:none; overflow:visible; }
+.camp-scene__bear { transform:translateX(0); }
+.camp-scene__sprite-frame { transform:translateX(0); }
 .can-play .camp-scene__bear { animation:bernie-stroll 6.5s var(--ease) both; }
-.can-play .camp-scene__sprite { animation:bernie-steps 2.8s steps(1,end) both; }
-.camp-scene__firefly { position:absolute; width:20px; height:20px; right:-4%; top:0; color:var(--cream); opacity:0; }
+.can-play .camp-scene__sprite-frame { animation:bernie-steps 2.8s steps(1,end) both; }
+.camp-scene__firefly { opacity:0; transform-origin:923px 400px; }
 .can-play .camp-scene__firefly { animation:firefly-visit 6.5s var(--ease) both; }
-.camp-scene__notice { position:absolute; left:15%; top:-13%; font-family:var(--hand); font-size:25px; color:var(--cream); white-space:nowrap; opacity:0; transform:rotate(-8deg); }
+.camp-scene__notice { font-family:var(--hand); font-size:25px; fill:var(--cream); opacity:0; }
 .can-play .camp-scene__notice { animation:bernie-notice 6.5s both; }
-.can-play .camp-scene__bear,.can-play .camp-scene__sprite,.can-play .camp-scene__firefly,.can-play .camp-scene__notice { animation-delay:.7s; }
+.can-play .camp-scene__bear,.can-play .camp-scene__sprite-frame,.can-play .camp-scene__firefly,.can-play .camp-scene__notice { animation-delay:.7s; }
 .camp-scene__replay { position:absolute; bottom:78px; right:var(--pad); color:var(--cream); display:flex; align-items:center; gap:9px; font-size:10px; padding:10px 0; border:0; }
 .camp-scene__replay svg { width:15px; height:15px; }
 .camp-scene__replay:disabled { opacity:.5; cursor:default; }
@@ -65,7 +63,7 @@ a,button { text-underline-offset:5px; }
 .camp-hero__caption a { display:flex; gap:15px; align-items:center; }
 .camp-hero__caption svg { width:16px; }
 @keyframes bernie-stroll { 0%{transform:translateX(-100px)} 14%{transform:translate(-77px,-2px)} 30%{transform:translate(-40px,0)} 45%,100%{transform:translateX(0)} }
-@keyframes bernie-steps { 0%,25%,50%,75%{background-position:0 50%} 12.5%,37.5%,62.5%,87%{background-position:50% 50%} 100%{background-position:100% 50%} }
+@keyframes bernie-steps { 0%,25%,50%,75%{transform:translateX(400px)} 12.5%,37.5%,62.5%,87%{transform:translateX(200px)} 100%{transform:translateX(0)} }
 @keyframes firefly-visit { 0%{opacity:0;transform:translate(-180px,80px) scale(.4)} 15%{opacity:1;transform:translate(-100px,10px)} 34%{transform:translate(-50px,-40px)} 52%{transform:translate(0,-30px)} 72%{opacity:1;transform:translate(30px,-80px)} 100%{opacity:0;transform:translate(65px,-120px) scale(.2)} }
 @keyframes bernie-notice { 0%,45%,88%,100%{opacity:0} 55%,75%{opacity:1} }
 
@@ -292,9 +290,7 @@ a,button { text-underline-offset:5px; }
   .camp-hero__copy { padding-top:48px; }
   .camp-hero h1 { font-size:86px; }
   .camp-hero__intro { max-width:25ch; }
-  .camp-scene__landscape { width:86vw; right:-15%; }
-  .camp-scene__story { right:26%; bottom:12%; width:180px; height:180px; }
-  .camp-scene__hills { height:42%; }
+  .camp-scene__world { width:145%; left:auto; right:-12%; bottom:10px; }
   .home-menu { gap:26px; }
   .home-product > img { height:240px; }
   .home-community { grid-template-columns:1fr 1fr; }
@@ -316,8 +312,6 @@ a,button { text-underline-offset:5px; }
   .camp-hero__copy { padding-top:38px; }
   .camp-hero h1 { font-size:clamp(54px,6vw,68px); }
   .camp-hero__intro { font-size:15px; }
-  .camp-scene__landscape { width:55vw; right:-4%; }
-  .camp-scene__story { width:160px; height:160px; right:24%; bottom:15%; }
   .catalog__layout { grid-template-columns:180px minmax(0,1fr); gap:28px; }
   .catalog-board__items { grid-template-columns:1fr; }
   .camp-explorer__layout { grid-template-columns:1fr 1fr; gap:28px; }
@@ -352,11 +346,7 @@ a,button { text-underline-offset:5px; }
   .camp-hero__copy > .script { font-size:30px; margin-bottom:18px; }
   .camp-hero__intro { font-size:14px; line-height:1.6; margin-bottom:20px; }
   .camp-hero .btn { min-height:44px; padding:11px 18px; font-size:9px; }
-  .camp-scene__landscape { width:118%; right:-14%; bottom:48px; mask-image:linear-gradient(to right,transparent,black 8%); }
-  .camp-scene__hills { height:42%; }
-  .camp-scene__story { width:125px; height:125px; right:49%; bottom:15%; }
-  .camp-scene__firefly { width:14px; height:14px; }
-  .camp-scene__notice { font-size:19px; left:12%; top:-6%; }
+  .camp-scene__world { width:min(190%,820px); left:auto; right:max(-18%,calc(100% - 820px)); bottom:40px; }
   .camp-scene__replay { bottom:58px; right:20px; font-size:8px; gap:5px; }
   .camp-scene__replay svg { width:12px; height:12px; }
   .camp-hero__caption { min-height:48px; font-size:9px; gap:20px; }
@@ -461,9 +451,7 @@ a,button { text-underline-offset:5px; }
   .camp-hero h1 { font-size:clamp(44px,6.2vw,55px); margin-top:14px; max-width:none; }
   .camp-hero__copy > .script { font-size:29px; margin-bottom:15px; }
   .camp-hero__intro { font-size:13px; margin-bottom:18px; }
-  .camp-scene__landscape { width:55vw; right:-4%; bottom:15px; }
-  .camp-scene__story { width:130px; height:130px; right:23%; bottom:16%; }
-  .camp-scene__hills { height:45%; }
+  .camp-scene__world { width:100%; left:0; right:auto; bottom:0; }
   .camp-hero__caption { min-height:45px; }
   .camp-scene__replay { bottom:51px; }
   .catalog__layout { grid-template-columns:150px minmax(0,1fr); gap:22px; }
@@ -491,9 +479,9 @@ a,button { text-underline-offset:5px; }
   *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; scroll-behavior:auto!important; }
   ::view-transition-old(root),::view-transition-new(root) { animation:none; }
   .camp-scene__firefly,.camp-scene__notice { display:none; }
-  .camp-scene__sprite { background-position:100% 50%; }
+  .camp-scene__sprite-frame { transform:none; }
 }
 .rm *, .rm *::before,.rm *::after { animation:none!important; transition-duration:.01ms!important; scroll-behavior:auto!important; }
 .rm .camp-scene__firefly,.rm .camp-scene__notice { display:none; }
-.rm .camp-scene__sprite { background-position:100% 50%; }
+.rm .camp-scene__sprite-frame { transform:none; }
 .rm::view-transition-old(root),.rm::view-transition-new(root) { animation:none; }

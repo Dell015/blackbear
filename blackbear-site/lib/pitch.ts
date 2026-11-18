@@ -1,0 +1,31 @@
+export const pitchChapters = [
+  { id: "experience", label: "The experience", short: "Experience", description: "What changes for guests, regulars, the crew, and the owner." },
+  { id: "features", label: "What you can try", short: "Features", description: "Open each feature and see what the prototype actually does." },
+  { id: "operations", label: "Behind the counter", short: "Operations", description: "Follow a branch update from the team workspace to the customer." },
+  { id: "design", label: "The Black Bear feeling", short: "Design & motion", description: "Try the illustration, logo, and small interaction details." },
+  { id: "scope", label: "From concept to café", short: "Next steps", description: "What is built, what needs connecting, and how to start a pilot." },
+] as const;
+export type PitchChapter = typeof pitchChapters[number]["id"];
+export const pitchAudiences = [
+  { id: "guest", label: "First-time guest", short: "Guest", question: "What is this place, what should I order, and where do I go?", title: "Make the first visit easy.", description: "Start with the coffee, understand the menu, and find a campsite without hunting through social posts.", features: ["Coffee, food and cakes in one searchable menu", "Photo quick views where matching images are supplied", "Listed cup sizes, prices and saved picks", "A branch picker, street map, calls and business directions"], href: "/menu", action: "Try the customer menu", boundary: "Prices come from the supplied boards. Ask the crew about current availability and ingredients." },
+  { id: "regular", label: "The regular", short: "Regular", question: "What’s new at my camp, and who’s behind the bar?", title: "Give every return a familiar starting point.", description: "Remember a preferred campsite, look into its cake case, discover branch updates, and find a familiar crew profile.", features: ["Saved campsite and menu picks on this device", "A sample cake case, local specials and event examples", "Illustrative crew profiles and duty flags", "A demo stamp passport and moderated photo-wall concept"], href: "/club", action: "Explore the Club", boundary: "Stamps, rewards, crew profiles and photo challenges are demonstrations. No real visit or reward is issued." },
+  { id: "crew", label: "The crew", short: "Crew", question: "How can we update our camp without sending the same message everywhere?", title: "Update once. Make it easier to find.", description: "A campsite desk gives the crew one place to maintain the information visitors need before coming in.", features: ["Edit a cake lineup, crew note and example special or event", "Flag a menu item unavailable at a particular branch", "Reuse a selected image from the shared brand or approved photo pool", "Keep illustrative crew introductions and duty flags current"], href: "/admin?tab=camps", action: "Open the campsite desk", boundary: "Publishing updates this browser only. Staff sign-in, permissions and cross-device publishing belong to the connected phase." },
+  { id: "owner", label: "The owner", short: "Owner", question: "Which camps need attention, and can I handle it from my phone?", title: "Seven campsites. A clearer daily check.", description: "An overview brings branch reviews, availability flags and the photo queue together, with a direct path to the next task.", features: ["See which camps have been reviewed today", "Keep one menu with branch-specific availability notes", "Review local photo submissions and reuse approved images", "Read an activity trail of changes made in the demo"], href: "/admin", action: "Try the owner overview", boundary: "These are browser-local workflow indicators. Live sales, inventory, attendance and business reporting are not connected." },
+] as const;
+export type PitchAudience = typeof pitchAudiences[number]["id"];
+export const pitchFeatures = [
+  { id:"menu",title:"A menu that starts with coffee",status:"Frontend demo",description:"Browse a plain category index, search drinks, kitchen and cakes together, inspect listed sizes, and save a few picks.",href:"/menu",action:"Browse the menu" },
+  { id:"camp",title:"Find a camp and see its own updates",status:"Live map · area previews",description:"Pan a themed street map and select a branch to move the camera. Shop pins need verification; Directions opens the business search.",href:"/campsites",action:"Explore the campsites" },
+  { id:"local",title:"A different reason to visit each branch",status:"Illustrative content",description:"Branch-specific specials, events and cake cases demonstrate local publishing. The workspace can change these examples on this browser.",href:"/campsites?camp=santiago",action:"See a branch example" },
+  { id:"club",title:"A little recognition for regulars",status:"Local concept demo",description:"Try a simulated stamp passport, a proposed reward, saved crew preferences and a community photo submission flow.",href:"/club",action:"Try the Club" },
+  { id:"desk",title:"A practical campsite desk",status:"Local workflow demo",description:"Edit a note, cake lineup, special or event. Publish locally, then see the same branch update on the customer page.",href:"/admin?tab=camps",action:"Open the branch desk" },
+  { id:"overview",title:"A quick look for the owner",status:"Local workflow demo",description:"Review seven camps, see unavailable-item flags, check pending photos, and open the task that needs attention.",href:"/admin",action:"Open the overview" },
+  { id:"media",title:"One shared photo pool",status:"Local workflow demo",description:"Browse supplied brand photos, review a local submission, and attach a selected image to a campsite update.",href:"/admin?tab=media",action:"Explore the media pool" },
+] as const;
+export function readPitchRoute(search: string): {chapter:PitchChapter;audience:PitchAudience} {
+  const params=new URLSearchParams(search),chapter=params.get("chapter"),audience=params.get("audience");
+  return {chapter:pitchChapters.some(c=>c.id===chapter)?chapter as PitchChapter:"experience",audience:pitchAudiences.some(a=>a.id===audience)?audience as PitchAudience:"guest"};
+}
+export function pitchRoute(chapter:PitchChapter,audience:PitchAudience) {
+  return `/pitch?chapter=${chapter}&audience=${audience}#pitch-content`;
+}
